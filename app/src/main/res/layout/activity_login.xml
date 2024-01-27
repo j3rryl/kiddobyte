@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/splash_background"
     android:layout_height="match_parent">
 
     <LinearLayout
 
-        android:background="@drawable/splash_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="40dp"
         tools:context=".Authentication.AuthenticationActivity">
@@ -23,20 +23,22 @@
             app:lottie_autoPlay="true"
             android:layout_marginBottom="10dp"
             app:lottie_rawRes="@raw/tiger"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Email"
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_email"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="start"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18dp"/>
+            android:layout_marginTop="0dp"
+            app:lottie_autoPlay="true"
+            android:layout_marginBottom="10dp"
+            app:lottie_rawRes="@raw/email"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="30dp"
             app:boxBackgroundColor="@color/white"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="20dp"
@@ -59,14 +61,15 @@
                 android:inputType="textEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie_password"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="start"
-            android:textColor="@color/white"
-            android:textStyle="bold"
-            android:textSize="18dp"/>
+            android:layout_marginTop="0dp"
+            app:lottie_autoPlay="true"
+            android:layout_marginBottom="10dp"
+            app:lottie_rawRes="@raw/password"/>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_input_layout"
             android:layout_width="match_parent"
@@ -124,7 +127,7 @@
             android:text="Register Here"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:textColor="@color/purple"/>
 
 

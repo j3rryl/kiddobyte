@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import com.example.kiddobyte.authentication.LoginActivity
 
 class SplashScreen : AppCompatActivity() {
     private val duration = 4000L
@@ -15,7 +16,7 @@ class SplashScreen : AppCompatActivity() {
         setContentView(R.layout.activity_splash_screen)
         handler = Handler(Looper.getMainLooper())
         handler.postDelayed({
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
             startActivity(intent)
             finish()
         }, duration)
