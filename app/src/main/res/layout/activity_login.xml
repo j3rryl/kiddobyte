@@ -39,19 +39,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            app:boxBackgroundColor="@color/white"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            app:boxStrokeColor="@color/black"
+            app:boxStrokeColor="@color/purple"
             app:endIconMode="clear_text"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
+            app:endIconTint="@color/purple"
+            app:hintTextColor="@color/purple"
             app:placeholderText="sample@gmail.com"
             app:startIconDrawable="@drawable/baseline_person_24"
-            app:startIconTint="@color/black">
+            app:startIconTint="@color/purple">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_input"
@@ -75,18 +74,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
-            app:boxBackgroundColor="@color/white"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="20dp"
             app:boxCornerRadiusBottomStart="20dp"
             app:boxCornerRadiusTopEnd="20dp"
             app:boxCornerRadiusTopStart="20dp"
-            app:boxStrokeColor="@color/black"
+            app:boxStrokeColor="@color/purple"
             app:endIconMode="password_toggle"
-            app:endIconTint="@color/black"
-            app:hintTextColor="@color/black"
+            app:endIconTint="@color/purple"
+            app:hintTextColor="@color/purple"
             app:startIconDrawable="@drawable/baseline_lock_24"
-            app:startIconTint="@color/black">
+            app:startIconTint="@color/purple">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/password_input"
