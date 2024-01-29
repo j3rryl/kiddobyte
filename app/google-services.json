@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "845862275739",
+    "project_id": "kiddobyte-eeaae",
+    "storage_bucket": "kiddobyte-eeaae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:845862275739:android:d144ba6352a0a90fe9943e",
+        "android_client_info": {
+          "package_name": "com.example.kiddobyte"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA08oqnKZAtwMv-cDFK-nXaqoVlYjaZpxs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
