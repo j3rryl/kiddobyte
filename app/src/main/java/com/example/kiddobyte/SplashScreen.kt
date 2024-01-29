@@ -8,7 +8,7 @@ import android.os.Looper
 import com.example.kiddobyte.authentication.LoginActivity
 
 class SplashScreen : AppCompatActivity() {
-    private val duration = 4000L
+    private val duration = 3800L
     private lateinit var handler : Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
