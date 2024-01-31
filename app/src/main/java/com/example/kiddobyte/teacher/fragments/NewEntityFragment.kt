@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.kiddobyte.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -15,15 +14,13 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [StatisticsFragment.newInstance] factory method to
+ * Use the [NewEntityFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class StatisticsFragment : Fragment() {
+class NewEntityFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var floatingButton: FloatingActionButton
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,24 +35,7 @@ class StatisticsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
-        val root = inflater.inflate(R.layout.fragment_statistics, container, false)
-        floatingButton = root.findViewById(R.id.floatingActionButton)
-        floatingButton.setOnClickListener{
-            val newFragment = NewEntityFragment()
-
-            // Begin the fragment transaction
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-
-            // Replace the current fragment with the new one
-            transaction.replace(R.id.frame_layout, newFragment)
-
-            // Add the transaction to the back stack (optional, enables back navigation)
-            transaction.addToBackStack(null)
-
-            // Commit the transaction
-            transaction.commit()
-        }
+        val root = inflater.inflate(R.layout.fragment_new_entity, container, false)
         return root
     }
 
@@ -66,12 +46,12 @@ class StatisticsFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment StatisticsFragment.
+         * @return A new instance of fragment NewEntityFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            StatisticsFragment().apply {
+            NewEntityFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
