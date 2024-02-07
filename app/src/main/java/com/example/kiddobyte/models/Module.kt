@@ -9,5 +9,7 @@ data class Module(
     var difficulty: String,
     var imageUrl: String,
     var createdAt: Date? = Date(),
-    var updatedAt: Date? = Date()
-)
+    var updatedAt: Date? = Date(),
+    var moduleId: String?,
+
+    )

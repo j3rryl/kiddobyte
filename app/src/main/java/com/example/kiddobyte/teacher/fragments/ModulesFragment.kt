@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kiddobyte.R
@@ -34,8 +35,8 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
     private var param2: String? = null
     private var _binding: FragmentModulesBinding? =null
     private val binding get()= _binding!!
-    private lateinit var moduleArrayList: ArrayList<Module>
-    private lateinit var firestore: FirebaseFirestore
+    private val moduleArrayList = ArrayList<Module>()
+    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,14 +67,13 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
             // Commit the transaction
             transaction.commit()
         }
-        moduleArrayList = ArrayList()
         binding.listOfModules.setHasFixedSize(true)
         binding.listOfModules.layoutManager = LinearLayoutManager(requireContext() as Activity)
         val adapter = ModuleAdapter(requireActivity(), moduleArrayList, this)
 
         binding.listOfModules.adapter = adapter
-        firestore = FirebaseFirestore.getInstance()
 
+        binding.loadingProgressBar.visibility = View.VISIBLE
         firestore.collection("modules").get()
             .addOnSuccessListener {
                 for (document in it){
@@ -82,13 +82,17 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
                         document.getString("author")?:"",
                         document.getString("authorId")?:"",
                         document.getString("difficulty")?:"",
-                        document.getString("imageUrl")?:""
+                        document.getString("imageUrl")?:"",
+                        moduleId = document.id
                     )
                     moduleArrayList.add(module)
                 }
                 adapter.notifyDataSetChanged()
+                binding.loadingProgressBar.visibility = View.GONE
             }
             .addOnFailureListener{
+                binding.loadingProgressBar.visibility = View.GONE
+                Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
                 Log.w("Firestore error", "${it.message}", it)
             }
         return binding.root

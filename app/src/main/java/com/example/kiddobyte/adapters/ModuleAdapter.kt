@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kiddobyte.R
 import com.example.kiddobyte.models.Module
@@ -33,6 +34,12 @@ class ModuleAdapter (private val context: Activity, private val dataList: ArrayL
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = dataList[position]
         holder.moduleDifficulty.text = dataList[position].difficulty
+        when (holder.moduleDifficulty.text){
+            "Easy"-> holder.moduleDifficulty.setTextColor(ContextCompat.getColor(context, R.color.green))
+            "Medium"-> holder.moduleDifficulty.setTextColor(ContextCompat.getColor(context,R.color.yellow))
+            "Hard"-> holder.moduleDifficulty.setTextColor(ContextCompat.getColor(context,R.color.red))
+
+        }
         holder.moduleAuthor.text = dataList[position].author
         holder.moduleTitle.text = dataList[position].title
         Picasso.get().load(dataList[position].imageUrl).into(holder.moduleImage)

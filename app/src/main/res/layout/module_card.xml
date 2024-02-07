@@ -38,9 +38,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
+                android:background="@drawable/badge_background"
                 android:layout_margin="10dp"
                 android:text="Easy"
-                android:padding="5dp"
+                android:padding="10dp"
                 android:textStyle="bold"/>
 
         </RelativeLayout>
@@ -50,6 +51,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:paddingVertical="15dp"
+            android:visibility="gone"
             android:layout_marginStart="20dp">
             <TextView
                 android:id="@+id/module_author"

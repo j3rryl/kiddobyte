@@ -53,53 +53,33 @@
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_new_difficulty_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:boxBackgroundColor="@color/white"
-                app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="20dp"
                 app:boxCornerRadiusBottomStart="20dp"
                 app:boxCornerRadiusTopEnd="20dp"
                 app:boxCornerRadiusTopStart="20dp"
                 app:boxStrokeColor="@color/purple"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/purple"
-                app:errorEnabled="true"
                 app:hintTextColor="@color/purple"
-                app:placeholderText="Difficulty">
+                android:hint="Difficulty">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_new_difficulty"
+                <AutoCompleteTextView
+                    android:id="@+id/difficulty"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Difficulty"
-                    android:inputType="text" />
+                    android:layout_weight="1"
+                    android:text="Easy"
+                    android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_new_image_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundColor="@color/white"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:boxStrokeColor="@color/purple"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/purple"
-                app:errorEnabled="true"
-                app:hintTextColor="@color/purple">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_new_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter image url"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                android:id="@+id/uploadImageView"
+                android:src="@drawable/baseline_add_photo"
+                android:layout_height="200dp"/>
 
             <Button
                 android:id="@+id/save_module_button"

@@ -1,20 +1,26 @@
 package com.example.kiddobyte.teacher.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.FragmentNewEntityBinding
 import com.example.kiddobyte.databinding.FragmentNewModuleBinding
 import com.example.kiddobyte.models.Module
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import java.util.Calendar
 import java.util.Date
+import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,6 +40,8 @@ class NewModuleFragment : Fragment() {
     private val binding get()= _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private lateinit var storageRef: StorageReference
+    private var uri: Uri?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,43 +57,76 @@ class NewModuleFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentNewModuleBinding.inflate(inflater, container, false)
+        storageRef = FirebaseStorage.getInstance().getReference("images")
+        val difficultyTypes = resources.getStringArray(R.array.difficulty)
+        val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, difficultyTypes)
+        var selected = "Easy"
+        binding.difficulty.setAdapter(arrayAdapter)
 
+
+        val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()){
+            binding.uploadImageView.setImageURI(it)
+            if(it!=null){
+                uri = it
+            }
+        }
+        binding.uploadImageView.setOnClickListener{
+            pickImage.launch("image/*")
+        }
+        binding.difficulty.setOnItemClickListener { parent, view, position, id ->
+            selected = parent.getItemAtPosition(position).toString()
+        }
         binding.saveModuleButton.setOnClickListener{
+            binding.saveModuleButton.isEnabled = false
+            binding.moduleProgressBar.visibility = View.VISIBLE
             val title = binding.inputNewTitle.text.toString()
-            val difficulty = binding.inputNewDifficulty.text.toString()
-            val image = binding.inputNewImage.text.toString()
+            val difficulty = selected
             auth = FirebaseAuth.getInstance()
+
+
             val currentUser = auth.currentUser
 
             firestore = FirebaseFirestore.getInstance()
 
-            currentUser?.let {
-                val authorUid = currentUser.uid
-                val authorName = currentUser.displayName?: "Unknown"
-                val newDoc = Module(
-                    title,
-                    authorName,
-                    authorUid,
-                    difficulty,
-                    imageUrl = "https://www.google.com/imgres?imgurl=https%3A%2F%2Fimg.freepik.com%2Ffree-photo%2Fchildren-playing-grass_1098-504.jpg%3Fsize%3D626%26ext%3Djpg%26ga%3DGA1.1.1826414947.1707177600%26semt%3Dais&tbnid=NSaoNMMHJrt5rM&vet=12ahUKEwj_0uqU7piEAxUIYKQEHdTKCg0QMygAegQIARBN..i&imgrefurl=https%3A%2F%2Fwww.freepik.com%2Ffree-photos-vectors%2Fhappy-children&docid=IJ_GPddBSdR5NM&w=626&h=417&q=free%20children%20images&ved=2ahUKEwj_0uqU7piEAxUIYKQEHdTKCg0QMygAegQIARBN",
-                    createdAt = Calendar.getInstance().time,
-                    updatedAt = Calendar.getInstance().time
-                )
-                firestore.collection("modules")
-                    .add(newDoc)
+            uri?.let { uri1 ->
+                val timestamp = System.currentTimeMillis()
+                val randomString = UUID.randomUUID().toString().substring(0,8)
+                storageRef.child("$timestamp-$randomString").putFile(uri1)
                     .addOnSuccessListener {
-                        Log.d("Firestore success", "Module data saved successfully")
-                        Toast.makeText(context, "Module added successfully", Toast.LENGTH_SHORT).show()
-                        requireActivity().supportFragmentManager.popBackStack()
+                        it.metadata!!.reference!!.downloadUrl
+                            .addOnSuccessListener {url->
+                                currentUser?.let {
+                                    val authorUid = currentUser.uid
+                                    val authorName = currentUser.displayName?: "Unknown"
+                                    val newDoc = Module(
+                                        title,
+                                        authorName,
+                                        authorUid,
+                                        difficulty,
+                                        url.toString(),
+                                        createdAt = Calendar.getInstance().time,
+                                        updatedAt = Calendar.getInstance().time,
+                                        moduleId = null
+                                    )
+                                    firestore.collection("modules")
+                                        .add(newDoc)
+                                        .addOnSuccessListener {
+                                            Log.d("Firestore success", "Module data saved successfully")
+                                            Toast.makeText(context, "Module added successfully", Toast.LENGTH_SHORT).show()
+                                            requireActivity().supportFragmentManager.popBackStack()
+                                        }
+                                        .addOnFailureListener {
+                                            Log.w("Firestore error", "Error adding module", it)
+                                            Toast.makeText(context, "Error adding module!", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            }
                     }
-                    .addOnFailureListener {
-                        Log.w("Firestore error", "Error adding module", it)
-                        Toast.makeText(context, "Error adding module!", Toast.LENGTH_SHORT).show()
+                    .addOnCompleteListener{
+                        binding.moduleProgressBar.visibility = View.GONE
+                        binding.saveModuleButton.isEnabled = true
                     }
             }
-
-
-
         }
         return binding.root
 
