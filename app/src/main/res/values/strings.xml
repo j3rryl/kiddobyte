@@ -2,4 +2,9 @@
     <string name="app_name">KiddoByte</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="userTypes">
+        <item>Teacher</item>
+        <item>Parent</item>
+        <item>Student</item>
+    </string-array>
 </resources>

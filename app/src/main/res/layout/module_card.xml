@@ -21,19 +21,19 @@
                 android:layout_height="150dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/home"
-                android:id="@+id/recipe_photo"/>
+                android:id="@+id/module_photo"/>
             <TextView
                 android:layout_width="wrap_content"
-                android:id="@+id/recipe_title"
+                android:id="@+id/module_title"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
-                android:text="Chicken"
+                android:text="Java"
                 android:textSize="25sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
             <TextView
-                android:id="@+id/recipe_difficulty"
+                android:id="@+id/module_difficulty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -52,19 +52,19 @@
             android:paddingVertical="15dp"
             android:layout_marginStart="20dp">
             <TextView
-                android:id="@+id/recipe_meal_type"
+                android:id="@+id/module_author"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                android:text="Meal Type: Breakfast"
+                android:text="Teacker Leslie"
                 android:textColor="@color/black"/>
             <Button
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="Remove Recipe"
-                android:id="@+id/remove_recipe_button"/>
+                android:text="Remove module"
+                android:id="@+id/remove_module_button"/>
         </LinearLayout>
     </LinearLayout>
 

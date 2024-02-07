@@ -47,6 +47,9 @@ dependencies {
     // Bottom Navigation
     implementation ("com.github.ismaeldivita:chip-navigation-bar:1.4.0")
 
+    //Picasso
+    implementation("com.squareup.picasso:picasso:2.8")
+
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
