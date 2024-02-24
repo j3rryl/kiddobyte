@@ -44,10 +44,15 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if(firebaseAuth.currentUser!=null){
-            val intent = Intent(this, TeacherActivity::class.java)
-            startActivity(intent)
-            finish()
+        val currentUser = firebaseAuth.currentUser
+        if(currentUser!=null){
+            if(currentUser.isEmailVerified) {
+                val intent = Intent(this, TeacherActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                firebaseAuth.signOut()
+            }
         }
     }
 }
