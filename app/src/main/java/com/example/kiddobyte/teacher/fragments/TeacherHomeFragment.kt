@@ -1,13 +1,20 @@
 package com.example.kiddobyte.teacher.fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kiddobyte.R
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.example.kiddobyte.adapters.ModuleAdapter
+import com.example.kiddobyte.adapters.UserAdapter
+import com.example.kiddobyte.databinding.FragmentTeacherHomeBinding
+import com.example.kiddobyte.models.User
+import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -19,11 +26,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TeacherHomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TeacherHomeFragment : Fragment() {
+class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private lateinit var floatingButton: FloatingActionButton
+    private var _binding: FragmentTeacherHomeBinding? =null
+    private val binding get()= _binding!!
+    private val userArrayList = ArrayList<User>()
+    private val firestore = FirebaseFirestore.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,10 +49,8 @@ class TeacherHomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
-        val root = inflater.inflate(R.layout.fragment_teacher_home, container, false)
-        floatingButton = root.findViewById(R.id.floatingActionButton)
-        floatingButton.setOnClickListener{
+        _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
+        binding.floatingActionButton.setOnClickListener{
             val newFragment = NewEntityFragment()
 
             // Begin the fragment transaction
@@ -57,7 +65,34 @@ class TeacherHomeFragment : Fragment() {
             // Commit the transaction
             transaction.commit()
         }
-        return root
+        binding.listOfUsers.setHasFixedSize(true)
+        binding.listOfUsers.layoutManager = LinearLayoutManager(requireActivity())
+        val adapter = UserAdapter(requireActivity(), userArrayList, this)
+
+        binding.listOfUsers.adapter = adapter
+
+        binding.loadingUsersProgressBar.visibility = View.VISIBLE
+        userArrayList.clear()
+        firestore.collection("users").get()
+            .addOnSuccessListener {
+                for (document in it){
+                    val user = User(
+                        document.id,
+                        document.getString("name")?:"",
+                        document.getString("email")?:"",
+                        document.getString("userType")?:""
+                    )
+                    userArrayList.add(user)
+                }
+                adapter.notifyDataSetChanged()
+                binding.loadingUsersProgressBar.visibility = View.GONE
+            }
+            .addOnFailureListener{
+                binding.loadingUsersProgressBar.visibility = View.GONE
+                Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
+                Log.w("Firestore error", "${it.message}", it)
+            }
+        return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -65,6 +100,10 @@ class TeacherHomeFragment : Fragment() {
         activity.supportActionBar?.title = "Home"
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -83,5 +122,9 @@ class TeacherHomeFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onItemClick(item: User) {
+        TODO("Not yet implemented")
     }
 }
