@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,6 +37,11 @@ class SupportFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_support, container, false)
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "Other"
     }
 
     companion object {

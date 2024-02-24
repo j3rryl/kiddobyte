@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.FragmentNewEntityBinding
 import com.example.kiddobyte.databinding.FragmentNewModuleBinding
@@ -130,6 +131,11 @@ class NewModuleFragment : Fragment() {
         }
         return binding.root
 
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "New Module"
     }
 
     override fun onDestroyView() {

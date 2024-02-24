@@ -7,17 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".teacher.fragments.NewModuleFragment">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/add_app_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/purple"
-        android:elevation="4dp"
-        app:title="Add New Module"
-        android:theme="@style/ToolbarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
     <ScrollView
-        android:layout_below="@id/add_app_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kiddobyte.R
@@ -68,12 +69,13 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
             transaction.commit()
         }
         binding.listOfModules.setHasFixedSize(true)
-        binding.listOfModules.layoutManager = LinearLayoutManager(requireContext() as Activity)
+        binding.listOfModules.layoutManager = LinearLayoutManager(requireActivity())
         val adapter = ModuleAdapter(requireActivity(), moduleArrayList, this)
 
         binding.listOfModules.adapter = adapter
 
         binding.loadingProgressBar.visibility = View.VISIBLE
+        moduleArrayList.clear()
         firestore.collection("modules").get()
             .addOnSuccessListener {
                 for (document in it){
@@ -105,6 +107,12 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
         } catch (e:Exception){
             null
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "Modules"
     }
     override fun onDestroyView() {
         super.onDestroyView()

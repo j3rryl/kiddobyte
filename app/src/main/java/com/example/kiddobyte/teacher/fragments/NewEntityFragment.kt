@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.FragmentNewEntityBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -81,6 +82,7 @@ class NewEntityFragment : Fragment() {
                     binding.saveUserButton.isEnabled = true
                     if(it.isSuccessful){
                         val user = auth.currentUser
+                        user?.sendEmailVerification()
                         val profileUpdate = UserProfileChangeRequest.Builder()
                             .setDisplayName(name)
                             .build()
@@ -125,6 +127,11 @@ class NewEntityFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "New User"
     }
 
     companion object {

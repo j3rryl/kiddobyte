@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -57,6 +58,11 @@ class TeacherHomeFragment : Fragment() {
             transaction.commit()
         }
         return root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "Home"
     }
 
     companion object {

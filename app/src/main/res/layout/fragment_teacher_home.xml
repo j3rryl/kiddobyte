@@ -10,28 +10,16 @@
 
     <!-- TODO: Update blank fragment layout -->
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/recipe_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/purple"
-        android:elevation="4dp"
-        android:theme="@style/ToolbarTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:title="Home"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_recipes"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:divider="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recipe_toolbar"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/module_card" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
