@@ -12,15 +12,15 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
-import com.example.kiddobyte.databinding.FragmentNewEntityBinding
 import com.example.kiddobyte.databinding.FragmentNewModuleBinding
+import com.example.kiddobyte.databinding.FragmentUpdateSubModuleBinding
 import com.example.kiddobyte.models.Module
+import com.example.kiddobyte.models.SubModule
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 // TODO: Rename parameter arguments, choose names that match
@@ -30,22 +30,24 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [NewModuleFragment.newInstance] factory method to
+ * Use the [UpdateSubModuleFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NewModuleFragment : Fragment() {
+class UpdateSubModuleFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var _binding: FragmentNewModuleBinding? =null
+    private var _binding: FragmentUpdateSubModuleBinding?=null
     private val binding get()= _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private lateinit var storageRef: StorageReference
     private var uri: Uri?=null
+    var submodule: SubModule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firestore = FirebaseFirestore.getInstance()
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -56,15 +58,37 @@ class NewModuleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        // Inflate the layout for this fragment
-        _binding = FragmentNewModuleBinding.inflate(inflater, container, false)
+        _binding = FragmentUpdateSubModuleBinding.inflate(inflater, container, false)
         storageRef = FirebaseStorage.getInstance().getReference("images")
+
         val difficultyTypes = resources.getStringArray(R.array.difficulty)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, difficultyTypes)
         var selected = "Easy"
         binding.difficulty.setAdapter(arrayAdapter)
 
+            firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        submodule = SubModule(
+                            title = documentSnapshot.getString("title") ?: "",
+                            author = documentSnapshot.getString("author") ?: "",
+                            uid = documentSnapshot.getString("uid") ?: "",
+                            difficulty = documentSnapshot.getString("difficulty") ?: "",
+                            parentId = param1!!,
+                            content = documentSnapshot.getString("content") ?: "",
+                            questions = null, // You'll fetch questions separately
+                            imageUrl =documentSnapshot.getString("imageUrl") ?: ""
+                        )
+                        binding.inputUpdateTitle.setText(submodule?.title)
+                        binding.inputUpdateContent.setText(submodule?.content)
+                    } else {
+                        // Submodule with the given ID does not exist
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.e("Firestore", "Error fetching submodule: ${exception.message}", exception)
+                    // Handle the failure to fetch submodule
+                }
 
         val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()){
             binding.uploadImageView.setImageURI(it)
@@ -78,17 +102,18 @@ class NewModuleFragment : Fragment() {
         binding.difficulty.setOnItemClickListener { parent, view, position, id ->
             selected = parent.getItemAtPosition(position).toString()
         }
-        binding.saveModuleButton.setOnClickListener{
-            binding.saveModuleButton.isEnabled = false
+        binding.inputUpdateTitle.setText(submodule?.title)
+        binding.inputUpdateContent.setText(submodule?.content)
+
+        binding.updateModuleButton.setOnClickListener{
+            binding.updateModuleButton.isEnabled = false
             binding.moduleProgressBar.visibility = View.VISIBLE
-            val title = binding.inputNewTitle.text.toString()
+            val title = binding.inputUpdateTitle.text.toString()
+            val content = binding.inputUpdateContent.text.toString()
             val difficulty = selected
             auth = FirebaseAuth.getInstance()
-
-
             val currentUser = auth.currentUser
 
-            firestore = FirebaseFirestore.getInstance()
 
             uri?.let { uri1 ->
                 val timestamp = System.currentTimeMillis()
@@ -100,59 +125,37 @@ class NewModuleFragment : Fragment() {
                                 currentUser?.let {
                                     val authorUid = currentUser.uid
                                     val authorName = currentUser.displayName?: "Unknown"
-                                    val newDoc = Module(
-                                        title,
-                                        authorName,
-                                        authorUid,
-                                        difficulty,
-                                        url.toString(),
-                                        createdAt = Calendar.getInstance().time,
-                                        updatedAt = Calendar.getInstance().time,
-                                        moduleId = null
+
+                                    val updateData = hashMapOf<String, Any>(
+                                        "title" to title,
+                                        "authorName" to authorName,
+                                        "content" to content,
+                                        "authorUid" to authorUid,
+                                        "difficulty" to difficulty,
+                                        "imageUrl" to url.toString(),
+                                        "updatedAt" to Calendar.getInstance().time
                                     )
-                                    if(param1!=null) {
+                                    if(param1!=null && param2!=null) {
                                         firestore.collection("modules").document(param1!!).collection("submodules")
-                                            .add(newDoc)
+                                            .document(param2!!)
+                                            .update(updateData)
                                             .addOnSuccessListener {
                                                 Log.d(
                                                     "Firestore success",
-                                                    "Module data saved successfully"
+                                                    "Submodule data saved successfully"
                                                 )
                                                 Toast.makeText(
                                                     context,
-                                                    "Submodule added successfully",
+                                                    "Submodule updated successfully",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 requireActivity().supportFragmentManager.popBackStack()
                                             }
                                             .addOnFailureListener {
-                                                Log.w("Firestore error", "Error adding module", it)
+                                                Log.w("Firestore error", "Error updating submodule", it)
                                                 Toast.makeText(
                                                     context,
-                                                    "Error adding module!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                    } else {
-                                        firestore.collection("modules")
-                                            .add(newDoc)
-                                            .addOnSuccessListener {
-                                                Log.d(
-                                                    "Firestore success",
-                                                    "Module data saved successfully"
-                                                )
-                                                Toast.makeText(
-                                                    context,
-                                                    "Module added successfully",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                            .addOnFailureListener {
-                                                Log.w("Firestore error", "Error adding module", it)
-                                                Toast.makeText(
-                                                    context,
-                                                    "Error adding module!",
+                                                    "Error updating submodule!",
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                             }
@@ -162,19 +165,19 @@ class NewModuleFragment : Fragment() {
                     }
                     .addOnCompleteListener{
                         binding.moduleProgressBar.visibility = View.GONE
-                        binding.saveModuleButton.isEnabled = true
+                        binding.updateModuleButton.isEnabled = true
                     }
             }
         }
         return binding.root
-
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = "New Module"
+        val title = activity.supportActionBar?.title
+        activity.supportActionBar?.title = "Update $title"
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -187,12 +190,12 @@ class NewModuleFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment NewModuleFragment.
+         * @return A new instance of fragment UpdateSubModuleFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            NewModuleFragment().apply {
+            UpdateSubModuleFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

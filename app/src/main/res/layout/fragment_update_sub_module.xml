@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/bottom_navigation_bar"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".teacher.fragments.NewModuleFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="10dp"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_update_title_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/purple"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/purple"
+                app:placeholderText="Name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_update_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter title"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_update_content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/purple"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/purple"
+                app:placeholderText="Content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_update_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:gravity="top"
+                    android:overScrollMode="always"
+                    android:hint="Enter content"
+                    android:inputType="textMultiLine" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_new_difficulty_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:hintTextColor="@color/purple"
+                android:hint="Difficulty">
+
+                <AutoCompleteTextView
+                    android:id="@+id/difficulty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Easy"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Questions"
+                android:textSize="20sp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginTop="12dp"
+                />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_update_question_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/purple"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/purple"
+                app:placeholderText="Question">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_update_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Question"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_update_answer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:endIconMode="clear_text"
+                app:endIconTint="@color/purple"
+                app:errorEnabled="true"
+                app:hintTextColor="@color/purple"
+                app:placeholderText="Answer">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_answer_question"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Answer"
+                    android:inputType="textCapSentences" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_gravity="center"
+                android:id="@+id/uploadImageView"
+                android:src="@drawable/baseline_add_photo"
+                android:layout_height="200dp"/>
+
+            <Button
+                android:id="@+id/update_module_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Update Module"
+                />
+            <ProgressBar
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/moduleProgressBar"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                android:indeterminateTint="@color/purple"/>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

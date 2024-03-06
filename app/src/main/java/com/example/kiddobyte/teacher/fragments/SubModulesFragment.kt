@@ -56,18 +56,10 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
         val moduleId = arguments?.getString(ARG_MODULE_ID)
         _binding = FragmentModulesBinding.inflate(inflater, container, false)
         binding.addModule.setOnClickListener {
-            val newFragment = NewModuleFragment()
-
-            // Begin the fragment transaction
+            val newFragment = NewModuleFragment.newInstance(moduleId!!, "Hello")
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-
-            // Replace the current fragment with the new one
             transaction.replace(R.id.frame_layout, newFragment)
-
-            // Add the transaction to the back stack (optional, enables back navigation)
             transaction.addToBackStack(null)
-
-            // Commit the transaction
             transaction.commit()
         }
         binding.listOfModules.setHasFixedSize(true)
@@ -108,8 +100,12 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
         _binding = null
     }
     override fun onItemClick(item: Module) {
-        Toast.makeText(context, "${item.title} clicked.", Toast.LENGTH_SHORT).show()
-
+        val moduleId = arguments?.getString(ARG_MODULE_ID)
+        val newFragment = UpdateSubModuleFragment.newInstance(moduleId!!, item.moduleId!!)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, newFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onRemoveClick(item: Module) {

@@ -136,7 +136,7 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAda
     }
 
     override fun onItemClick(item: Module) {
-        Toast.makeText(context, "${item.title}", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
         val moduleDetailsFragment = SubModulesFragment.newInstance(item.moduleId ?: "", item.title)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, moduleDetailsFragment)
