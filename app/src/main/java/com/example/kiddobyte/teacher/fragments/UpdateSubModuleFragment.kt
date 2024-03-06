@@ -102,9 +102,6 @@ class UpdateSubModuleFragment : Fragment() {
         binding.difficulty.setOnItemClickListener { parent, view, position, id ->
             selected = parent.getItemAtPosition(position).toString()
         }
-        binding.inputUpdateTitle.setText(submodule?.title)
-        binding.inputUpdateContent.setText(submodule?.content)
-
         binding.updateModuleButton.setOnClickListener{
             binding.updateModuleButton.isEnabled = false
             binding.moduleProgressBar.visibility = View.VISIBLE
