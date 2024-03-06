@@ -32,6 +32,13 @@
                 android:textSize="25sp"
                 android:textColor="@color/white"
                 android:textStyle="bold"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove module"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/remove_module_button"/>
             <TextView
                 android:id="@+id/module_difficulty"
                 android:layout_width="wrap_content"
@@ -61,12 +68,6 @@
                 android:padding="5dp"
                 android:text="Teacker Leslie"
                 android:textColor="@color/black"/>
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:text="Remove module"
-                android:id="@+id/remove_module_button"/>
         </LinearLayout>
     </LinearLayout>
 

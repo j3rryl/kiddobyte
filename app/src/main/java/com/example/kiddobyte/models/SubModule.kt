@@ -7,6 +7,7 @@ data class SubModule(
     var difficulty: String,
     var parentId: String,
     var content: String,
+    var questions: Array<Question>?,
     var imageUrl: String,
     var createdAt:String,
     var updatedAt:String

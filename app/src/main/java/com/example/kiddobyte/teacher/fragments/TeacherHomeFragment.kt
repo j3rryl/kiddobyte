@@ -14,6 +14,7 @@ import com.example.kiddobyte.adapters.ModuleAdapter
 import com.example.kiddobyte.adapters.UserAdapter
 import com.example.kiddobyte.databinding.FragmentTeacherHomeBinding
 import com.example.kiddobyte.models.User
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -26,13 +27,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TeacherHomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener {
+class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAdapter.OnRemoveClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var _binding: FragmentTeacherHomeBinding? =null
     private val binding get()= _binding!!
     private val userArrayList = ArrayList<User>()
+    private lateinit var adapter: UserAdapter
     private val firestore = FirebaseFirestore.getInstance()
 
 
@@ -67,7 +69,7 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener {
         }
         binding.listOfUsers.setHasFixedSize(true)
         binding.listOfUsers.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = UserAdapter(requireActivity(), userArrayList, this)
+        adapter = UserAdapter(requireActivity(), userArrayList, this, this)
 
         binding.listOfUsers.adapter = adapter
 
@@ -76,13 +78,16 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener {
         firestore.collection("users").get()
             .addOnSuccessListener {
                 for (document in it){
-                    val user = User(
-                        document.id,
-                        document.getString("name")?:"",
-                        document.getString("email")?:"",
-                        document.getString("userType")?:""
-                    )
-                    userArrayList.add(user)
+                    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                    if(document.id!= currentUserId) {
+                        val user = User(
+                            document.id,
+                            document.getString("name") ?: "",
+                            document.getString("email") ?: "",
+                            document.getString("userType") ?: ""
+                        )
+                        userArrayList.add(user)
+                    }
                 }
                 adapter.notifyDataSetChanged()
                 binding.loadingUsersProgressBar.visibility = View.GONE
@@ -125,6 +130,26 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(item: User) {
-        TODO("Not yet implemented")
+        Toast.makeText(context, "View ${item.name}", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRemoveClick(item: User) {
+        item.id?.let {userId->
+            FirebaseFirestore.getInstance().collection("users").document(userId)
+                .delete()
+                .addOnSuccessListener {
+                    // Deletion successful
+                    println("User deleted successfully from both Authentication and Firestore")
+                    val removedIndex = userArrayList.indexOfFirst { it.id == userId }
+                    if (removedIndex != -1) {
+                        userArrayList.removeAt(removedIndex)
+                        adapter.notifyItemRemoved(removedIndex)
+                        Toast.makeText(context, "${item.name} successfully deleted.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println("Error deleting user from Firestore: ${e.message}")
+                }
+        }
     }
 }

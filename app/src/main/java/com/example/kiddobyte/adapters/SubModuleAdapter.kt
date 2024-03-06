@@ -13,7 +13,7 @@ import com.example.kiddobyte.R
 import com.example.kiddobyte.models.Module
 import com.squareup.picasso.Picasso
 
-class ModuleAdapter (private val context: Activity, private val dataList: ArrayList<Module>, private val itemClickListener: OnItemClickListener,private val itemRemoveListener: OnRemoveClickListener): RecyclerView.Adapter<ModuleAdapter.MyViewHolder>() {
+class SubModuleAdapter (private val context: Activity, private val dataList: ArrayList<Module>, private val itemClickListener: OnItemClickListener, private val itemRemoveListener: OnRemoveClickListener): RecyclerView.Adapter<SubModuleAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val moduleImage: ImageView = itemView.findViewById(R.id.module_photo)

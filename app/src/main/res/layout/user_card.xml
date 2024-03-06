@@ -8,7 +8,10 @@
     app:cardElevation="5dp"
     app:strokeColor="@color/white"
     android:paddingVertical="10dp">
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
@@ -32,4 +35,11 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"/>
         </LinearLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove User"
+            android:id="@+id/remove_user_button"
+            />
+    </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

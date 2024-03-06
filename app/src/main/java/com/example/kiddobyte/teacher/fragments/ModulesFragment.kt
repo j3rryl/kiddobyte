@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kiddobyte.R
 import com.example.kiddobyte.adapters.ModuleAdapter
+import com.example.kiddobyte.adapters.UserAdapter
 import com.example.kiddobyte.databinding.FragmentModulesBinding
 import com.example.kiddobyte.models.Module
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,13 +31,14 @@ private const val ARG_PARAM2 = "param2"
  * Use the [ModulesFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
+class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAdapter.OnRemoveClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private var _binding: FragmentModulesBinding? =null
     private val binding get()= _binding!!
     private val moduleArrayList = ArrayList<Module>()
+    private lateinit var adapter: ModuleAdapter
     private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +72,7 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
         }
         binding.listOfModules.setHasFixedSize(true)
         binding.listOfModules.layoutManager = LinearLayoutManager(requireActivity())
-        val adapter = ModuleAdapter(requireActivity(), moduleArrayList, this)
+        adapter = ModuleAdapter(requireActivity(), moduleArrayList, this, this)
 
         binding.listOfModules.adapter = adapter
 
@@ -100,14 +102,6 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
         return binding.root
     }
 
-    private fun parseDateString(dateString:String): Date?{
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        return try {
-            format.parse(dateString)
-        } catch (e:Exception){
-            null
-        }
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -142,6 +136,31 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(item: Module) {
-        TODO("Not yet implemented")
+        Toast.makeText(context, "${item.title}", Toast.LENGTH_SHORT).show()
+        val moduleDetailsFragment = SubModulesFragment.newInstance(item.moduleId ?: "", item.title)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, moduleDetailsFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
+    }
+
+    override fun onRemoveClick(item: Module) {
+        item.moduleId?.let {itemId->
+            FirebaseFirestore.getInstance().collection("modules").document(itemId)
+                .delete()
+                .addOnSuccessListener {
+                    // Deletion successful
+                    println("Module deleted successfully from both Authentication and Firestore")
+                    val removedIndex = moduleArrayList.indexOfFirst { it.moduleId == itemId }
+                    if (removedIndex != -1) {
+                        moduleArrayList.removeAt(removedIndex)
+                        adapter.notifyItemRemoved(removedIndex)
+                        Toast.makeText(context, "${item.title} successfully removed.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println("Error deleting user from Firestore: ${e.message}")
+                }
+        }
     }
 }
