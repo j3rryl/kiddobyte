@@ -34,7 +34,8 @@ class NewEntityFragment : Fragment() {
     private var _binding: FragmentNewEntityBinding? =null
     private val binding get()= _binding!!
     private lateinit var auth:FirebaseAuth
-    private lateinit var firestore:FirebaseFirestore
+    private val  firestore = FirebaseFirestore.getInstance()
+    private var parentMap = HashMap<String, String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,11 +60,21 @@ class NewEntityFragment : Fragment() {
         _binding = FragmentNewEntityBinding.inflate(inflater, container, false)
         val userTypes = resources.getStringArray(R.array.userTypes)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, userTypes)
+        var parentAdapter = ArrayAdapter<String>(requireContext(), R.layout.dropdown_item)
+
         var selected = "Teacher"
         binding.autoCompleteView.setAdapter(arrayAdapter)
         binding.autoCompleteView.setOnItemClickListener { parent, view, position, id ->
             selected = parent.getItemAtPosition(position).toString()
+            if(selected=="Student"){
+                binding.inputNewParentLayout.visibility = View.VISIBLE
+                loadParents(parentAdapter)
+                binding.parentView.setAdapter(parentAdapter)
+            } else {
+                binding.inputNewParentLayout.visibility = View.GONE
+            }
         }
+
         binding.saveUserButton.setOnClickListener {
             val name = binding.inputNewName.text.toString()
             val email = binding.inputNewEmail.text.toString()
@@ -73,7 +84,6 @@ class NewEntityFragment : Fragment() {
             binding.saveUserButton.isEnabled = false
 
             auth = FirebaseAuth.getInstance()
-            firestore = FirebaseFirestore.getInstance()
             val userType = selected
 
             try {
@@ -133,7 +143,21 @@ class NewEntityFragment : Fragment() {
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.title = "New User"
     }
+    private fun loadParents(parentAdapter: ArrayAdapter<String>) {
+        firestore.collection("users").whereEqualTo("userType", "parent").get()
+            .addOnSuccessListener {
+                for (document in it){
+                        parentMap[document.getString("name")!!] = document.id
+                    Log.d("Firestore parent", document.getString("name")!!)
+                }
+                parentAdapter.addAll(parentMap.keys.toList())
 
+            }
+            .addOnFailureListener{
+                Toast.makeText(context, "Failed to fetch parents", Toast.LENGTH_SHORT).show()
+                Log.w("Firestore error", "${it.message}", it)
+            }
+    }
     companion object {
         /**
          * Use this factory method to create a new instance of
