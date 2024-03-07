@@ -20,7 +20,6 @@
                 android:id="@+id/input_new_name_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 app:boxBackgroundColor="@color/white"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="20dp"
@@ -45,7 +44,6 @@
                 android:id="@+id/input_new_email_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
                 app:boxBackgroundColor="@color/white"
                 app:boxBackgroundMode="outline"
                 app:boxCornerRadiusBottomEnd="20dp"
@@ -87,6 +85,31 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Teacher"
+                    android:inputType="none" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_new_parent_layout"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:boxBackgroundColor="@color/white"
+                app:boxCornerRadiusBottomEnd="20dp"
+                app:boxCornerRadiusBottomStart="20dp"
+                app:boxCornerRadiusTopEnd="20dp"
+                app:boxCornerRadiusTopStart="20dp"
+                app:boxStrokeColor="@color/purple"
+                app:hintTextColor="@color/purple"
+                android:visibility="gone"
+                android:hint="Parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/parentView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Parent"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
