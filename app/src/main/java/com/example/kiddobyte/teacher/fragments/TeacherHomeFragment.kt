@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kiddobyte.R
-import com.example.kiddobyte.adapters.ModuleAdapter
 import com.example.kiddobyte.adapters.UserAdapter
 import com.example.kiddobyte.databinding.FragmentTeacherHomeBinding
 import com.example.kiddobyte.models.User
@@ -35,11 +34,12 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     private val binding get()= _binding!!
     private val userArrayList = ArrayList<User>()
     private lateinit var adapter: UserAdapter
-    private val firestore = FirebaseFirestore.getInstance()
+    private var firestore: FirebaseFirestore? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        firestore = FirebaseFirestore.getInstance()
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -54,29 +54,28 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
         _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
         binding.floatingActionButton.setOnClickListener{
             val newFragment = NewEntityFragment()
-
-            // Begin the fragment transaction
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-
-            // Replace the current fragment with the new one
             transaction.replace(R.id.frame_layout, newFragment)
-
-            // Add the transaction to the back stack (optional, enables back navigation)
             transaction.addToBackStack(null)
-
-            // Commit the transaction
             transaction.commit()
         }
         binding.listOfUsers.setHasFixedSize(true)
         binding.listOfUsers.layoutManager = LinearLayoutManager(requireActivity())
         adapter = UserAdapter(requireActivity(), userArrayList, this, this)
-
         binding.listOfUsers.adapter = adapter
-
+        loadUsers()
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val activity = requireActivity() as AppCompatActivity
+        activity.supportActionBar?.title = "Home"
+    }
+    private fun loadUsers(){
         binding.loadingUsersProgressBar.visibility = View.VISIBLE
-        userArrayList.clear()
-        firestore.collection("users").get()
-            .addOnSuccessListener {
+        firestore?.collection("users")?.get()
+            ?.addOnSuccessListener {
+                userArrayList.clear()
                 for (document in it){
                     val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
                     if(document.id!= currentUserId) {
@@ -92,19 +91,12 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
                 adapter.notifyDataSetChanged()
                 binding.loadingUsersProgressBar.visibility = View.GONE
             }
-            .addOnFailureListener{
+            ?.addOnFailureListener{
                 binding.loadingUsersProgressBar.visibility = View.GONE
                 Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
                 Log.w("Firestore error", "${it.message}", it)
             }
-        return binding.root
     }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = "Home"
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null

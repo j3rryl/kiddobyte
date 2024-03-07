@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/bottom_navigation_bar"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".teacher.fragments.AddQuestionFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="vertical">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_update_question_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Question">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_question"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Question"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_update_answer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Answer">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_answer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Answer"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/save_question_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Question"
+            />
+        <ProgressBar
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:id="@+id/progressBar"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:indeterminateTint="@color/purple"/>
+    </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

@@ -62,6 +62,7 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
             transaction.addToBackStack(null)
             transaction.commit()
         }
+
         binding.listOfModules.setHasFixedSize(true)
         binding.listOfModules.layoutManager = LinearLayoutManager(requireActivity())
         adapter = ModuleAdapter(requireActivity(), moduleArrayList, this, this)

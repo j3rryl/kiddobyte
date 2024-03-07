@@ -60,7 +60,13 @@ class UpdateSubModuleFragment : Fragment() {
     ): View? {
         _binding = FragmentUpdateSubModuleBinding.inflate(inflater, container, false)
         storageRef = FirebaseStorage.getInstance().getReference("images")
-
+        binding.viewQuestionsButton.setOnClickListener {
+            val newFragment = QuestionFragment.newInstance(param1!!, param2!!)
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, newFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
         val difficultyTypes = resources.getStringArray(R.array.difficulty)
         val arrayAdapter = ArrayAdapter(requireContext(), R.layout.dropdown_item, difficultyTypes)
         var selected = "Easy"

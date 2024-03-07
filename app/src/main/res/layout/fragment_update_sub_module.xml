@@ -91,62 +91,30 @@
                     android:text="Easy"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Questions"
-                android:textSize="20sp"
                 android:layout_marginBottom="12dp"
                 android:layout_marginTop="12dp"
-                />
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_update_question_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                app:boxBackgroundColor="@color/white"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:boxStrokeColor="@color/purple"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/purple"
-                app:errorEnabled="true"
-                app:hintTextColor="@color/purple"
-                app:placeholderText="Question">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_update_question"
-                    android:layout_width="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Question"
-                    android:inputType="textCapSentences" />
-            </com.google.android.material.textfield.TextInputLayout>
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/input_update_answer_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:boxBackgroundColor="@color/white"
-                app:boxBackgroundMode="outline"
-                app:boxCornerRadiusBottomEnd="20dp"
-                app:boxCornerRadiusBottomStart="20dp"
-                app:boxCornerRadiusTopEnd="20dp"
-                app:boxCornerRadiusTopStart="20dp"
-                app:boxStrokeColor="@color/purple"
-                app:endIconMode="clear_text"
-                app:endIconTint="@color/purple"
-                app:errorEnabled="true"
-                app:hintTextColor="@color/purple"
-                app:placeholderText="Answer">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_answer_question"
-                    android:layout_width="match_parent"
+                    android:text="Questions"
+                    android:textSize="20sp"
+
+                    />
+                <Button
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Enter Answer"
-                    android:inputType="textCapSentences" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_gravity="end"
+                    android:text="View Questions"
+                    android:id="@+id/view_questions_button"
+                    />
+            </LinearLayout>
+
             <ImageView
                 android:layout_width="200dp"
                 android:layout_gravity="center"
