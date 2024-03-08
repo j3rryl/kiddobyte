@@ -1,5 +1,7 @@
 package com.example.kiddobyte.teacher.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -35,11 +37,15 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     private val userArrayList = ArrayList<User>()
     private lateinit var adapter: UserAdapter
     private var firestore: FirebaseFirestore? = null
+    private lateinit var sharedPrefs: SharedPreferences
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         firestore = FirebaseFirestore.getInstance()
+        sharedPrefs = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -52,6 +58,13 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
+        val userType = sharedPrefs.getString("userType", null)
+        if (userType == "teacher") {
+            binding.floatingActionButton.visibility = View.VISIBLE
+        } else {
+            binding.floatingActionButton.visibility = View.GONE
+        }
+
         binding.floatingActionButton.setOnClickListener{
             val newFragment = NewEntityFragment()
             val transaction = requireActivity().supportFragmentManager.beginTransaction()

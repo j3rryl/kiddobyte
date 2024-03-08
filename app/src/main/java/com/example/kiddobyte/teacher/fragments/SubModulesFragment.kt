@@ -1,5 +1,7 @@
 package com.example.kiddobyte.teacher.fragments
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -34,9 +36,12 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
     private val moduleArrayList = ArrayList<Module>()
     private lateinit var adapter: ModuleAdapter
     private val firestore = FirebaseFirestore.getInstance()
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPrefs = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -55,6 +60,12 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
     ): View? {
         val moduleId = arguments?.getString(ARG_MODULE_ID)
         _binding = FragmentModulesBinding.inflate(inflater, container, false)
+        val userType = sharedPrefs.getString("userType", null)
+        if (userType == "teacher") {
+            binding.addModule.visibility = View.VISIBLE
+        } else {
+            binding.addModule.visibility = View.GONE
+        }
         binding.addModule.setOnClickListener {
             val newFragment = NewModuleFragment.newInstance(moduleId!!, "Hello")
             val transaction = requireActivity().supportFragmentManager.beginTransaction()

@@ -1,17 +1,21 @@
 package com.example.kiddobyte.authentication
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.ActivityLoginBinding
 import com.example.kiddobyte.teacher.TeacherActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private val firestore = FirebaseFirestore.getInstance()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -47,6 +51,17 @@ class LoginActivity : AppCompatActivity() {
         val currentUser = firebaseAuth.currentUser
         if(currentUser!=null){
             if(currentUser.isEmailVerified) {
+                firestore.collection("users").document(currentUser.uid).get()
+                    .addOnSuccessListener {
+                        Log.d("Firestore success", "USER data saved successfully")
+                        val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                        val editor = sharedPrefs.edit()
+                        editor.putString("userType", it.getString("userType"))
+                        editor.apply()
+                    }
+                    .addOnFailureListener{
+                        Log.w("Firestore error", "Error adding user", it)
+                    }
                 val intent = Intent(this, TeacherActivity::class.java)
                 startActivity(intent)
                 finish()

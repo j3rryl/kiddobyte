@@ -1,6 +1,8 @@
 package com.example.kiddobyte.teacher.fragments
 
 import android.app.Activity
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -40,9 +42,11 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAda
     private val moduleArrayList = ArrayList<Module>()
     private lateinit var adapter: ModuleAdapter
     private val firestore = FirebaseFirestore.getInstance()
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sharedPrefs = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -55,19 +59,19 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAda
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentModulesBinding.inflate(inflater, container, false)
+        val userType = sharedPrefs.getString("userType", null)
+
+        if (userType == "teacher") {
+            binding.addModule.visibility = View.VISIBLE
+        } else {
+            binding.addModule.visibility = View.GONE
+        }
+
         binding.addModule.setOnClickListener {
             val newFragment = NewModuleFragment()
-
-            // Begin the fragment transaction
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
-
-            // Replace the current fragment with the new one
             transaction.replace(R.id.frame_layout, newFragment)
-
-            // Add the transaction to the back stack (optional, enables back navigation)
             transaction.addToBackStack(null)
-
-            // Commit the transaction
             transaction.commit()
         }
         binding.listOfModules.setHasFixedSize(true)
@@ -136,7 +140,6 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAda
     }
 
     override fun onItemClick(item: Module) {
-        Toast.makeText(context, item.title, Toast.LENGTH_SHORT).show()
         val moduleDetailsFragment = SubModulesFragment.newInstance(item.moduleId ?: "", item.title)
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, moduleDetailsFragment)
