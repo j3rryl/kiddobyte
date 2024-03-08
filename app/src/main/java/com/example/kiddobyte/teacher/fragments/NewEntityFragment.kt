@@ -64,21 +64,25 @@ class NewEntityFragment : Fragment() {
 
         var selected = "Teacher"
         binding.autoCompleteView.setAdapter(arrayAdapter)
+        loadParents(parentAdapter)
         binding.autoCompleteView.setOnItemClickListener { parent, view, position, id ->
             selected = parent.getItemAtPosition(position).toString()
             if(selected=="Student"){
                 binding.inputNewParentLayout.visibility = View.VISIBLE
-                loadParents(parentAdapter)
                 binding.parentView.setAdapter(parentAdapter)
+
             } else {
                 binding.inputNewParentLayout.visibility = View.GONE
             }
         }
 
+
         binding.saveUserButton.setOnClickListener {
             val name = binding.inputNewName.text.toString()
             val email = binding.inputNewEmail.text.toString()
             val password = binding.inputNewPassword.text.toString()
+            val parentName = binding.parentView.text.toString()
+            val parentUid = parentMap[parentName]
 
             binding.progressBar.visibility = View.VISIBLE
             binding.saveUserButton.isEnabled = false
@@ -106,8 +110,11 @@ class NewEntityFragment : Fragment() {
                             val userData = hashMapOf(
                                 "name" to name,
                                 "email" to email,
-                                "userType" to userType
+                                "userType" to userType,
                             )
+                            if(selected == "Student" && parentUid!=null){
+                                userData["parentUid"] = parentUid
+                            }
                             firestore.collection("users").document(uid).set(userData)
                                 .addOnSuccessListener {
                                     Log.d("Firestore success", "USER data saved successfully")
@@ -144,7 +151,7 @@ class NewEntityFragment : Fragment() {
         activity.supportActionBar?.title = "New User"
     }
     private fun loadParents(parentAdapter: ArrayAdapter<String>) {
-        firestore.collection("users").whereEqualTo("userType", "parent").get()
+        firestore.collection("users").whereEqualTo("userType", "Parent").get()
             .addOnSuccessListener {
                 for (document in it){
                         parentMap[document.getString("name")!!] = document.id
