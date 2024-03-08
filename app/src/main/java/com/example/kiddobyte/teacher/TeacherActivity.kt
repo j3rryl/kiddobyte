@@ -12,6 +12,7 @@ import com.example.kiddobyte.databinding.ActivityTeacherBinding
 import com.example.kiddobyte.teacher.fragments.ModulesFragment
 import com.example.kiddobyte.teacher.fragments.TeacherHomeFragment
 import com.example.kiddobyte.teacher.fragments.SupportFragment
+import com.example.kiddobyte.teacher.fragments.UpdateProfileFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class TeacherActivity : AppCompatActivity() {
@@ -40,6 +41,14 @@ class TeacherActivity : AppCompatActivity() {
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
+                true
+            }
+            R.id.action_profile->{
+                val newFragment = UpdateProfileFragment()
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.frame_layout, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
                 true
             }
             else -> super.onOptionsItemSelected(item)
