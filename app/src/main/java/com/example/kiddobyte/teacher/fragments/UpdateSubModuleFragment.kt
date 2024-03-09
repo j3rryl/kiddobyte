@@ -40,14 +40,13 @@ class UpdateSubModuleFragment : Fragment() {
     private var _binding: FragmentUpdateSubModuleBinding?=null
     private val binding get()= _binding!!
     private lateinit var auth: FirebaseAuth
-    private lateinit var firestore: FirebaseFirestore
+    private val firestore = FirebaseFirestore.getInstance()
     private lateinit var storageRef: StorageReference
     private var uri: Uri?=null
     var submodule: SubModule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firestore = FirebaseFirestore.getInstance()
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)

@@ -6,11 +6,26 @@
     android:layout_above="@+id/bottom_navigation_bar"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".teacher.fragments.ContentFragment">
-
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="5dp"
+        android:id="@+id/card_view"
+        android:layout_margin="5dp"
+        android:paddingVertical="10dp">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/module_content"
+        android:layout_margin="15dp"
         android:text="Hello there" />
 
+    </com.google.android.material.card.MaterialCardView>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_below="@id/card_view"
+        android:layout_height="wrap_content"
+        android:text="Take Quiz"
+        android:id="@+id/take_quiz_button"
+        android:layout_marginStart="10dp"/>
 </RelativeLayout>

@@ -76,7 +76,7 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
 
         binding.listOfModules.setHasFixedSize(true)
         binding.listOfModules.layoutManager = LinearLayoutManager(requireActivity())
-        adapter = ModuleAdapter(requireActivity(), moduleArrayList, this, this)
+        adapter = ModuleAdapter(requireActivity(), moduleArrayList, this, this, sharedPrefs)
 
         binding.listOfModules.adapter = adapter
 

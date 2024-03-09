@@ -1,6 +1,7 @@
 package com.example.kiddobyte.adapters
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import com.example.kiddobyte.R
 import com.example.kiddobyte.models.Module
 import com.squareup.picasso.Picasso
 
-class ModuleAdapter (private val context: Activity, private val dataList: ArrayList<Module>, private val itemClickListener: OnItemClickListener,private val itemRemoveListener: OnRemoveClickListener): RecyclerView.Adapter<ModuleAdapter.MyViewHolder>() {
+class ModuleAdapter (private val context: Activity, private val dataList: ArrayList<Module>, private val itemClickListener: OnItemClickListener,private val itemRemoveListener: OnRemoveClickListener, private val sharedPrefs: SharedPreferences): RecyclerView.Adapter<ModuleAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val moduleImage: ImageView = itemView.findViewById(R.id.module_photo)
@@ -49,6 +50,12 @@ class ModuleAdapter (private val context: Activity, private val dataList: ArrayL
 
         holder.itemView.setOnClickListener{
             itemClickListener.onItemClick(item)
+        }
+        val userType = sharedPrefs.getString("userType", null)
+        if (userType == "Teacher") {
+            holder.removeButton.visibility = View.VISIBLE
+        } else {
+            holder.removeButton.visibility = View.GONE
         }
         holder.removeButton.setOnClickListener {
             itemRemoveListener.onRemoveClick(item)

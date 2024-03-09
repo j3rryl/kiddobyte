@@ -1,5 +1,6 @@
 package com.example.kiddobyte.teacher
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -38,6 +39,9 @@ class TeacherActivity : AppCompatActivity() {
         return when(item.itemId){
             R.id.action_logout->{
                 FirebaseAuth.getInstance().signOut()
+                val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                val editor = sharedPrefs.edit()
+                editor.clear().apply()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()

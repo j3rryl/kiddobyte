@@ -6,11 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.kiddobyte.R
-import com.example.kiddobyte.databinding.FragmentContentBinding
-import com.example.kiddobyte.databinding.FragmentUpdateSubModuleBinding
-import com.example.kiddobyte.models.SubModule
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kiddobyte.adapters.QuizAdapter
+import com.example.kiddobyte.databinding.FragmentQuizBinding
+import com.example.kiddobyte.models.Question
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -20,21 +21,21 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ContentFragment.newInstance] factory method to
+ * Use the [QuizFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ContentFragment : Fragment() {
+class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var _binding: FragmentContentBinding?=null
+    private var _binding: FragmentQuizBinding?= null
     private val binding get()= _binding!!
-    private lateinit var firestore: FirebaseFirestore
+    private val questionArrayList = ArrayList<Question>()
+    private lateinit var adapter: QuizAdapter
+    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        firestore = FirebaseFirestore.getInstance()
-
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -46,38 +47,46 @@ class ContentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        _binding = FragmentContentBinding.inflate(inflater, container, false)
-        binding.takeQuizButton.setOnClickListener{
-            val newFragment = QuizFragment.newInstance(param1!!, param2!!)
-            val transaction = requireActivity().supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.frame_layout, newFragment)
-            transaction.addToBackStack(null)
-            transaction.commit()
-        }
-        firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    binding.moduleContent.setText(documentSnapshot.getString("content"))
-                } else {
-                    // Submodule with the given ID does not exist
+        _binding = FragmentQuizBinding.inflate(inflater, container, false)
+        binding.listOfQuiz.setHasFixedSize(true)
+        binding.listOfQuiz.layoutManager = LinearLayoutManager(requireActivity())
+        adapter = QuizAdapter(requireActivity(), questionArrayList, this)
+        binding.listOfQuiz.adapter = adapter
+        binding.loadingQuizProgressBar.visibility = View.VISIBLE
+        questionArrayList.clear()
+        firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).collection("questions").get()
+            .addOnSuccessListener {
+                for (document in it){
+                    val question = Question(
+                        document.getString("title")?:"",
+                        document.getString("answer")?:"",
+                        document.id
+                    )
+                    Log.d("Firestore quiz", question.title)
+                    questionArrayList.add(question)
                 }
+                adapter.notifyDataSetChanged()
+                binding.loadingQuizProgressBar.visibility = View.GONE
+
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error fetching submodule: ${exception.message}", exception)
                 // Handle the failure to fetch submodule
+                binding.loadingQuizProgressBar.visibility = View.GONE
             }
+
         return binding.root
     }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = "Module Content"
+        activity.supportActionBar?.title = "Quiz"
     }
+
     companion object {
         /**
          * Use this factory method to create a new instance of
@@ -85,16 +94,20 @@ class ContentFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment ContentFragment.
+         * @return A new instance of fragment QuizFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ContentFragment().apply {
+            QuizFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onAnswerClick(item: Question) {
+        Toast.makeText(context, "Hello there!", Toast.LENGTH_SHORT).show()
     }
 }
