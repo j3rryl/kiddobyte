@@ -59,7 +59,7 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
         // Inflate the layout for this fragment
         _binding = FragmentTeacherHomeBinding.inflate(inflater, container, false)
         val userType = sharedPrefs.getString("userType", null)
-        if (userType == "teacher") {
+        if (userType == "Teacher") {
             binding.floatingActionButton.visibility = View.VISIBLE
         } else {
             binding.floatingActionButton.visibility = View.GONE

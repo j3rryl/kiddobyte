@@ -61,7 +61,7 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
         val moduleId = arguments?.getString(ARG_MODULE_ID)
         _binding = FragmentModulesBinding.inflate(inflater, container, false)
         val userType = sharedPrefs.getString("userType", null)
-        if (userType == "teacher") {
+        if (userType == "Teacher") {
             binding.addModule.visibility = View.VISIBLE
         } else {
             binding.addModule.visibility = View.GONE
@@ -112,8 +112,14 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
         _binding = null
     }
     override fun onItemClick(item: Module) {
+        val userType = sharedPrefs.getString("userType", null)
+        var newFragment: Fragment? = null;
         val moduleId = arguments?.getString(ARG_MODULE_ID)
-        val newFragment = UpdateSubModuleFragment.newInstance(moduleId!!, item.moduleId!!)
+        newFragment = if(userType=="Teacher"){
+            UpdateSubModuleFragment.newInstance(moduleId!!, item.moduleId!!)
+        } else {
+            ContentFragment.newInstance(moduleId!!, item.moduleId!!)
+        }
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
         transaction.replace(R.id.frame_layout, newFragment)
         transaction.addToBackStack(null)
