@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kiddobyte.adapters.QuizAdapter
 import com.example.kiddobyte.databinding.FragmentQuizBinding
 import com.example.kiddobyte.models.Question
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +30,8 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private var _binding: FragmentQuizBinding?= null
+    private val firebaseAuth =  FirebaseAuth.getInstance()
+
     private val binding get()= _binding!!
     private val questionArrayList = ArrayList<Question>()
     private lateinit var adapter: QuizAdapter
@@ -108,6 +111,40 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     }
 
     override fun onAnswerClick(item: Question) {
-        Toast.makeText(context, "Hello there!", Toast.LENGTH_SHORT).show()
+        val currentUser = firebaseAuth.currentUser
+
+        val newDoc = Question(
+            item.title,
+            item.answer,
+            item.uid
+        )
+        firestore.collection("users").document(currentUser?.uid!!).collection("submodules").document(param2!!)
+            .collection("quizzes")
+            .document(item.uid!!)
+            .set(newDoc)
+            .addOnSuccessListener {
+                Log.d(
+                    "Firestore success",
+                    "Answer saved successfully"
+                )
+                Toast.makeText(
+                    context,
+                    "Quiz answered successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+                val removedIndex = questionArrayList.indexOf(item)
+                questionArrayList.removeAt(removedIndex)
+                adapter.notifyItemRemoved(removedIndex)
+
+            }
+            .addOnFailureListener {
+                Log.w("Firestore error", "Error adding question", it)
+                Toast.makeText(
+                    context,
+                    "Error answering question!",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
     }
 }

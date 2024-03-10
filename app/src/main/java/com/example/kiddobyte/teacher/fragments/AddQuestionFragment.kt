@@ -60,7 +60,7 @@ class AddQuestionFragment : Fragment() {
                 .addOnSuccessListener {
                     Log.d(
                         "Firestore success",
-                        "Module data saved successfully"
+                        "Question data saved successfully"
                     )
                     Toast.makeText(
                         context,
@@ -72,7 +72,7 @@ class AddQuestionFragment : Fragment() {
 
                 }
                 .addOnFailureListener {
-                    Log.w("Firestore error", "Error adding module", it)
+                    Log.w("Firestore error", "Error adding question", it)
                     Toast.makeText(
                         context,
                         "Error adding question!",
