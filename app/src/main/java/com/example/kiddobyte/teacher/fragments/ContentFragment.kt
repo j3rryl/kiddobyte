@@ -54,10 +54,17 @@ class ContentFragment : Fragment() {
             transaction.addToBackStack(null)
             transaction.commit()
         }
+        binding.viewResultButton.setOnClickListener{
+            val newFragment = ResultFragment.newInstance(param1!!, param2!!)
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.frame_layout, newFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
         firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).get()
             .addOnSuccessListener { documentSnapshot ->
                 if (documentSnapshot.exists()) {
-                    binding.moduleContent.setText(documentSnapshot.getString("content"))
+                    binding.moduleContent.text = documentSnapshot.getString("content")
                 } else {
                     // Submodule with the given ID does not exist
                 }

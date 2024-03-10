@@ -1,29 +1,37 @@
 package com.example.kiddobyte.adapters
 
 import android.app.Activity
-import android.text.Editable
-import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kiddobyte.R
-import com.example.kiddobyte.models.Question
+import com.example.kiddobyte.models.Answer
 import com.google.android.material.textfield.TextInputEditText
 
-class QuizAdapter (private val context: Activity, private val dataList: ArrayList<Question>, private val answerClickListener: OnAnswerClickListener): RecyclerView.Adapter<QuizAdapter.MyViewHolder>() {
+class QuizAdapter (private val context: Activity, private val dataList: ArrayList<Answer>, private val answerClickListener: OnAnswerClickListener, private val isQuiz: Boolean): RecyclerView.Adapter<QuizAdapter.MyViewHolder>() {
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
         val question: TextView = itemView.findViewById(R.id.quiz_title)
+        val correctAnswer: TextView = itemView.findViewById(R.id.correct_answer)
+        val selectedAnswer: TextView = itemView.findViewById(R.id.selected_answer)
         val answerButton: Button = itemView.findViewById(R.id.answer_question_button)
         val inputAnswer: TextInputEditText = itemView.findViewById(R.id.input_new_answer)
+        val resultView: LinearLayout = itemView.findViewById(R.id.result_view)
+        val quizView: LinearLayout = itemView.findViewById(R.id.quiz_view)
+        val isCorrect: ImageView = itemView.findViewById(R.id.is_correct)
+
     }
 
 
     interface OnAnswerClickListener {
-        fun onAnswerClick(item: Question)
+        fun onAnswerClick(item: Answer)
     }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.quiz_card, parent, false)
@@ -33,15 +41,32 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = dataList[position]
         holder.question.text = dataList[position].title
-        if (dataList[position].answer!=""){
-            holder.inputAnswer.setText(dataList[position].answer)
-            holder.inputAnswer.isEnabled = false
-            holder.answerButton.isEnabled = false
+        if(isQuiz){
+            holder.resultView.visibility = View.GONE
+            holder.quizView.visibility = View.VISIBLE
+            if (dataList[position].selected?.isNotEmpty() == true){
+                holder.inputAnswer.setText(dataList[position].selected)
+                holder.inputAnswer.isEnabled = false
+                holder.answerButton.isEnabled = false
+            }
+        } else {
+            holder.resultView.visibility = View.VISIBLE
+            val setAnswer = "Correct answer: ${dataList[position].answer}"
+            val selectedAnswer = "Selected answer: ${dataList[position].selected}"
+            holder.correctAnswer.text = setAnswer
+            holder.selectedAnswer.text = selectedAnswer
+            if(dataList[position].correct == true){
+                holder.isCorrect.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.correct))
+            } else {
+                holder.isCorrect.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.incorrect))
+            }
+            holder.quizView.visibility = View.GONE
         }
 
 
+
         holder.answerButton.setOnClickListener{
-            dataList[position].answer = holder.inputAnswer.text.toString()?:"Nothing here"
+            dataList[position].selected = holder.inputAnswer.text.toString()
             answerClickListener.onAnswerClick(item)
         }
     }

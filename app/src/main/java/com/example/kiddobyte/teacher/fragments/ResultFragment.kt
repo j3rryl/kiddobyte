@@ -9,8 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kiddobyte.R
 import com.example.kiddobyte.adapters.QuizAdapter
 import com.example.kiddobyte.databinding.FragmentQuizBinding
+import com.example.kiddobyte.databinding.FragmentResultBinding
 import com.example.kiddobyte.models.Answer
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -22,21 +24,20 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [QuizFragment.newInstance] factory method to
+ * Use the [ResultFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
+class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var _binding: FragmentQuizBinding?= null
+    private var _binding: FragmentResultBinding?=null
     private val firebaseAuth =  FirebaseAuth.getInstance()
 
     private val binding get()= _binding!!
     private val questionArrayList = ArrayList<Answer>()
     private lateinit var adapter: QuizAdapter
     private val firestore = FirebaseFirestore.getInstance()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -49,15 +50,14 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        _binding = FragmentQuizBinding.inflate(inflater, container, false)
+        _binding = FragmentResultBinding.inflate(inflater, container, false)
         binding.listOfQuiz.setHasFixedSize(true)
         binding.listOfQuiz.layoutManager = LinearLayoutManager(requireActivity())
-        adapter = QuizAdapter(requireActivity(), questionArrayList, this, true)
+        adapter = QuizAdapter(requireActivity(), questionArrayList, this, false)
         binding.listOfQuiz.adapter = adapter
-        binding.loadingQuizProgressBar.visibility = View.VISIBLE
+        binding.loadingResultProgressBar.visibility = View.VISIBLE
         questionArrayList.clear()
-        firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).collection("questions").get()
+        firestore.collection("users").document(firebaseAuth.currentUser?.uid!!).collection("submodules").document(param2!!).collection("quizzes").get()
             .addOnSuccessListener {
                 for (document in it){
                     val question = Answer(
@@ -68,21 +68,23 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                         document.getString("feedback")?:"",
                         document.id
                     )
-                    Log.d("Firestore quiz", question.selected!!)
+                    Log.d("Firestore quiz", question.title)
+                    Log.d("Firestore booleanQ", question.correct.toString())
+
                     questionArrayList.add(question)
                 }
                 adapter.notifyDataSetChanged()
-                binding.loadingQuizProgressBar.visibility = View.GONE
+                binding.loadingResultProgressBar.visibility = View.GONE
 
             }
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error fetching submodule: ${exception.message}", exception)
                 // Handle the failure to fetch submodule
-                binding.loadingQuizProgressBar.visibility = View.GONE
+                binding.loadingResultProgressBar.visibility = View.GONE
             }
-
         return binding.root
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -90,7 +92,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as AppCompatActivity
-        activity.supportActionBar?.title = "Quiz"
+        activity.supportActionBar?.title = "Results"
     }
 
     companion object {
@@ -100,12 +102,12 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment QuizFragment.
+         * @return A new instance of fragment ResultFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            QuizFragment().apply {
+            ResultFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
@@ -114,43 +116,6 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     }
 
     override fun onAnswerClick(item: Answer) {
-        val currentUser = firebaseAuth.currentUser
-
-        val newDoc = Answer(
-            item.title,
-            item.answer,
-            item.selected,
-            item.answer.lowercase()==item.selected?.lowercase(),
-            item.feedback,
-            item.uid
-        )
-        firestore.collection("users").document(currentUser?.uid!!).collection("submodules").document(param2!!)
-            .collection("quizzes")
-            .document(item.uid!!)
-            .set(newDoc)
-            .addOnSuccessListener {
-                Log.d(
-                    "Firestore success",
-                    "Answer saved successfully"
-                )
-                Toast.makeText(
-                    context,
-                    "Quiz answered successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
-                val removedIndex = questionArrayList.indexOf(item)
-                questionArrayList.removeAt(removedIndex)
-                adapter.notifyItemRemoved(removedIndex)
-
-            }
-            .addOnFailureListener {
-                Log.w("Firestore error", "Error adding question", it)
-                Toast.makeText(
-                    context,
-                    "Error answering question!",
-                    Toast.LENGTH_SHORT
-                ).show()
-
-            }
+        Toast.makeText(context,"Nothing to answer", Toast.LENGTH_SHORT).show()
     }
 }

@@ -11,21 +11,22 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:id="@+id/quiz_title"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginHorizontal="10dp"
+            android:text="Question"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
+            android:id="@+id/quiz_view"
             android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/quiz_title"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginHorizontal="10dp"
-                android:text="Question"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:textStyle="bold"/>
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_new_answer_layout"
                 android:layout_width="match_parent"
@@ -51,14 +52,50 @@
                 android:hint="Enter answer"
                 android:inputType="textCapSentences" />
             </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:text="Answer Question"
+                android:layout_margin="8dp"
+                android:id="@+id/answer_question_button"
+                />
         </LinearLayout>
-        <Button
-            android:layout_width="wrap_content"
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:text="Answer Question"
-            android:layout_marginEnd="8dp"
-            android:id="@+id/answer_question_button"
-            />
+            android:layout_margin="10dp"
+            android:id="@+id/result_view"
+            android:visibility="gone"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:orientation="vertical"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/selected_answer"
+                    android:layout_height="wrap_content"
+                    android:text="Selected Answer: Sir"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/correct_answer"
+                    android:layout_height="wrap_content"
+                    android:text="Correct Answer: Sir"/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:id="@+id/is_correct"
+                android:contentDescription="Correct Icon"
+                android:src="@drawable/correct" />
+        </LinearLayout>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
