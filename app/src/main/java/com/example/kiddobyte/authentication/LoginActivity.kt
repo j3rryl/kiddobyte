@@ -10,6 +10,7 @@ import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.ActivityLoginBinding
 import com.example.kiddobyte.teacher.TeacherActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
@@ -32,6 +33,7 @@ class LoginActivity : AppCompatActivity() {
                             Toast.makeText(this, "Please verify your email address", Toast.LENGTH_SHORT).show()
                             return@addOnCompleteListener
                         } else {
+                            firebaseAuth.currentUser?.let { it1 -> storeUserType(it1) }
                             val intent = Intent(this, TeacherActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -50,24 +52,33 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         val currentUser = firebaseAuth.currentUser
         if(currentUser!=null){
-            if(currentUser.isEmailVerified) {
-                firestore.collection("users").document(currentUser.uid).get()
-                    .addOnSuccessListener {
-                        Log.d("Firestore success", "USER data saved successfully")
-                        val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
-                        val editor = sharedPrefs.edit()
-                        editor.putString("userType", it.getString("userType"))
-                        editor.apply()
-                    }
-                    .addOnFailureListener{
-                        Log.w("Firestore error", "Error adding user", it)
-                    }
-                val intent = Intent(this, TeacherActivity::class.java)
-                startActivity(intent)
-                finish()
-            } else {
-                firebaseAuth.signOut()
-            }
+            val intent = Intent(this, TeacherActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+    }
+
+    private fun storeUserType(currentUser: FirebaseUser){
+        firestore.collection("users").document(currentUser.uid).get()
+            .addOnSuccessListener {documentSnapshot->
+                val userType = documentSnapshot.getString("userType")
+                if (userType != null) {
+                    // Save userType in SharedPreferences
+                    Log.d("sharedPref", documentSnapshot.getString("userType")!!)
+                    val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                    val editor = sharedPrefs.edit()
+                    editor.putString("userType", userType)
+                    editor.apply()
+                    // Start activity after saving userType in SharedPreferences
+                    val intent = Intent(this, TeacherActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Log.e("sharedPrefs", "User type is null")
+                }
+            }
+            .addOnFailureListener{
+                Log.w("Firestore error", "Error adding user", it)
+            }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
@@ -40,6 +41,8 @@ class TeacherActivity : AppCompatActivity() {
             R.id.action_logout->{
                 FirebaseAuth.getInstance().signOut()
                 val sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                val userType = sharedPrefs.getString("userType", null)
+                Log.d("sharedPref", userType?:"")
                 val editor = sharedPrefs.edit()
                 editor.clear().apply()
                 val intent = Intent(this, LoginActivity::class.java)

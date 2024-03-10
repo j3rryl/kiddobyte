@@ -60,6 +60,7 @@ class ModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, ModuleAda
         // Inflate the layout for this fragment
         _binding = FragmentModulesBinding.inflate(inflater, container, false)
         val userType = sharedPrefs.getString("userType", null)
+        Log.d("sharedPref", userType?:"")
 
         if (userType == "Teacher") {
             binding.addModule.visibility = View.VISIBLE
