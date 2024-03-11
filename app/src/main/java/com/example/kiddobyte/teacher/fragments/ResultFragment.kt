@@ -58,6 +58,8 @@ class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
         questionArrayList.clear()
         firestore.collection("users").document(param1!!).collection("submodules").document(param2!!).collection("quizzes").get()
             .addOnSuccessListener {
+                var correctCount = 0
+                var incorrectCount = 0
                 for (document in it){
                     val question = Answer(
                         document.getString("title")?:"",
@@ -67,11 +69,24 @@ class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                         document.getString("feedback")?:"",
                         document.id
                     )
-                    Log.d("Firestore quiz", question.title)
-                    Log.d("Firestore booleanQ", question.correct.toString())
+                    if (question.correct == true) {
+                        correctCount++
+                    } else {
+                        incorrectCount++
+                    }
 
                     questionArrayList.add(question)
                 }
+                val correctPercentage = (correctCount.toFloat() / questionArrayList.size.toFloat()) * 100
+
+                val grade: String = when {
+                    correctPercentage > 75 -> "A"
+                    correctPercentage > 60 -> "B"
+                    correctPercentage > 50 -> "C"
+                    else -> "D"
+                }
+                val correctAnswers = "Correct answers: $correctCount/${questionArrayList.size} Grade: $grade"
+                binding.correctAnswers.text = correctAnswers
                 adapter.notifyDataSetChanged()
                 binding.loadingResultProgressBar.visibility = View.GONE
 
