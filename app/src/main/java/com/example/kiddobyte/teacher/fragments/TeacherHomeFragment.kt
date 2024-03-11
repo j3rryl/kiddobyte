@@ -74,7 +74,7 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
         }
         binding.listOfUsers.setHasFixedSize(true)
         binding.listOfUsers.layoutManager = LinearLayoutManager(requireActivity())
-        adapter = UserAdapter(requireActivity(), userArrayList, this, this)
+        adapter = UserAdapter(requireActivity(), userArrayList, this, this, sharedPrefs)
         binding.listOfUsers.adapter = adapter
         loadUsers()
         return binding.root
@@ -96,7 +96,8 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
                             document.id,
                             document.getString("name") ?: "",
                             document.getString("email") ?: "",
-                            document.getString("userType") ?: ""
+                            document.getString("userType") ?: "",
+                            document.getString("imageUrl") ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
                         )
                         userArrayList.add(user)
                     }
