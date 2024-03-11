@@ -11,6 +11,7 @@ import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.FragmentContentBinding
 import com.example.kiddobyte.databinding.FragmentUpdateSubModuleBinding
 import com.example.kiddobyte.models.SubModule
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 // TODO: Rename parameter arguments, choose names that match
@@ -29,6 +30,7 @@ class ContentFragment : Fragment() {
     private var param2: String? = null
     private var _binding: FragmentContentBinding?=null
     private val binding get()= _binding!!
+    private val firebaseAuth =  FirebaseAuth.getInstance()
     private lateinit var firestore: FirebaseFirestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,7 +57,7 @@ class ContentFragment : Fragment() {
             transaction.commit()
         }
         binding.viewResultButton.setOnClickListener{
-            val newFragment = ResultFragment.newInstance(param1!!, param2!!)
+            val newFragment = ResultFragment.newInstance(firebaseAuth.currentUser?.uid!!, param2!!)
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             transaction.replace(R.id.frame_layout, newFragment)
             transaction.addToBackStack(null)

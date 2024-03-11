@@ -10,6 +10,5 @@ data class Module(
     var imageUrl: String,
     var createdAt: Date? = Date(),
     var updatedAt: Date? = Date(),
-    var moduleId: String?,
-
+    var moduleId: String? = null
     )

@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kiddobyte.adapters.QuizAdapter
 import com.example.kiddobyte.databinding.FragmentQuizBinding
 import com.example.kiddobyte.models.Answer
+import com.example.kiddobyte.models.Module
+import com.example.kiddobyte.models.SubModule
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -114,7 +116,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     }
 
     override fun onAnswerClick(item: Answer) {
-        val currentUser = firebaseAuth.currentUser
+        val currentUser = firebaseAuth.currentUser?:return
 
         val newDoc = Answer(
             item.title,
@@ -124,33 +126,84 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
             item.feedback,
             item.uid
         )
-        firestore.collection("users").document(currentUser?.uid!!).collection("submodules").document(param2!!)
-            .collection("quizzes")
-            .document(item.uid!!)
-            .set(newDoc)
-            .addOnSuccessListener {
-                Log.d(
-                    "Firestore success",
-                    "Answer saved successfully"
-                )
-                Toast.makeText(
-                    context,
-                    "Quiz answered successfully",
-                    Toast.LENGTH_SHORT
-                ).show()
-                val removedIndex = questionArrayList.indexOf(item)
-                questionArrayList.removeAt(removedIndex)
-                adapter.notifyItemRemoved(removedIndex)
+        firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).get()
+            .addOnSuccessListener { documentSnapshot ->
+                var submodule: Module?=null
+                if (documentSnapshot.exists()) {
+                    submodule = Module(
+                        documentSnapshot.getString("title")?:"",
+                        documentSnapshot.getString("author")?:"",
+                        documentSnapshot.getString("authorUid")?:"",
+                        documentSnapshot.getString("difficulty")?:"",
+                        documentSnapshot.getString("imageUrl")?:""
+                    )
+                    Log.d("Firestore module success", submodule.title)
 
+                    val userSubmoduleRef = firestore.collection("users").document(currentUser.uid)
+                        .collection("submodules").document(param2!!)
+                    val quizRef = userSubmoduleRef.collection("quizzes").document(item.uid!!)
+                    userSubmoduleRef
+                        .set(submodule) // set data for the submodule document
+                        .addOnSuccessListener {
+                            quizRef.set(newDoc) // set data for the quiz document
+                                .addOnSuccessListener {
+                                    Toast.makeText(
+                                        context,
+                                        "Quiz answered successfully",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    val removedIndex = questionArrayList.indexOf(item)
+                                    questionArrayList.removeAt(removedIndex)
+                                    adapter.notifyItemRemoved(removedIndex)
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w("Firestore error", "Error adding question", exception)
+                                    Toast.makeText(
+                                        context,
+                                        "Error answering question!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                        }
+                        .addOnFailureListener { exception ->
+                            // Handle failure to set submodule document data
+                            Log.w("Firestore module error", "Error updating module", exception)
+                        }
+                }
             }
-            .addOnFailureListener {
-                Log.w("Firestore error", "Error adding question", it)
-                Toast.makeText(
-                    context,
-                    "Error answering question!",
-                    Toast.LENGTH_SHORT
-                ).show()
+            .addOnFailureListener { exception ->
+                Log.e("Firestore", "Error fetching submodule: ${exception.message}", exception)
+            }
 
-            }
+
+//        firestore.collection("users").document(currentUser.uid).collection("submodules")
+//            .document(param2!!)
+//            .collection("quizzes")
+//            .document(item.uid!!)
+//            .set(newDoc)
+//            .addOnSuccessListener {
+//                Log.d(
+//                    "Firestore success",
+//                    "Answer saved successfully"
+//                )
+//                Toast.makeText(
+//                    context,
+//                    "Quiz answered successfully",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                val removedIndex = questionArrayList.indexOf(item)
+//                questionArrayList.removeAt(removedIndex)
+//                adapter.notifyItemRemoved(removedIndex)
+//
+//            }
+//            .addOnFailureListener {
+//                Log.w("Firestore error", "Error adding question", it)
+//                Toast.makeText(
+//                    context,
+//                    "Error answering question!",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//
+//            }
     }
 }

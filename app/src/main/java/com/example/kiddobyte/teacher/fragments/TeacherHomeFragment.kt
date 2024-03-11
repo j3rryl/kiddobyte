@@ -38,12 +38,14 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     private lateinit var adapter: UserAdapter
     private var firestore: FirebaseFirestore? = null
     private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var auth: FirebaseAuth
 
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         firestore = FirebaseFirestore.getInstance()
+        auth = FirebaseAuth.getInstance()
         sharedPrefs = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         arguments?.let {
@@ -86,30 +88,60 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     }
     private fun loadUsers(){
         binding.loadingUsersProgressBar.visibility = View.VISIBLE
-        firestore?.collection("users")?.get()
-            ?.addOnSuccessListener {
-                userArrayList.clear()
-                for (document in it){
-                    val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-                    if(document.id!= currentUserId) {
-                        val user = User(
-                            document.id,
-                            document.getString("name") ?: "",
-                            document.getString("email") ?: "",
-                            document.getString("userType") ?: "",
-                            document.getString("imageUrl") ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
-                        )
-                        userArrayList.add(user)
+
+        val userType = sharedPrefs.getString("userType", null)
+        if(userType=="Parent"){
+            firestore?.collection("users")?.whereEqualTo("parentUid", auth.currentUser?.uid)?.get()
+                ?.addOnSuccessListener {
+                    userArrayList.clear()
+                    for (document in it){
+                        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                        if(document.id!= currentUserId) {
+                            val user = User(
+                                document.id,
+                                document.getString("name") ?: "",
+                                document.getString("email") ?: "",
+                                document.getString("userType") ?: "",
+                                document.getString("imageUrl") ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
+                            )
+                            userArrayList.add(user)
+                        }
                     }
+                    adapter.notifyDataSetChanged()
+                    binding.loadingUsersProgressBar.visibility = View.GONE
                 }
-                adapter.notifyDataSetChanged()
-                binding.loadingUsersProgressBar.visibility = View.GONE
-            }
-            ?.addOnFailureListener{
-                binding.loadingUsersProgressBar.visibility = View.GONE
-                Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
-                Log.w("Firestore error", "${it.message}", it)
-            }
+                ?.addOnFailureListener{
+                    binding.loadingUsersProgressBar.visibility = View.GONE
+                    Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
+                    Log.w("Firestore error", "${it.message}", it)
+                }
+        } else {
+            firestore?.collection("users")?.get()
+                ?.addOnSuccessListener {
+                    userArrayList.clear()
+                    for (document in it) {
+                        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                        if (document.id != currentUserId) {
+                            val user = User(
+                                document.id,
+                                document.getString("name") ?: "",
+                                document.getString("email") ?: "",
+                                document.getString("userType") ?: "",
+                                document.getString("imageUrl")
+                                    ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
+                            )
+                            userArrayList.add(user)
+                        }
+                    }
+                    adapter.notifyDataSetChanged()
+                    binding.loadingUsersProgressBar.visibility = View.GONE
+                }
+                ?.addOnFailureListener {
+                    binding.loadingUsersProgressBar.visibility = View.GONE
+                    Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
+                    Log.w("Firestore error", "${it.message}", it)
+                }
+        }
     }
     override fun onDestroy() {
         super.onDestroy()
@@ -136,7 +168,11 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     }
 
     override fun onItemClick(item: User) {
-        Toast.makeText(context, "View ${item.name}", Toast.LENGTH_SHORT).show()
+        val newFragment = StudentModulesFragment.newInstance(item.id!!, item.name)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, newFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     override fun onRemoveClick(item: User) {

@@ -32,7 +32,6 @@ class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     private var param1: String? = null
     private var param2: String? = null
     private var _binding: FragmentResultBinding?=null
-    private val firebaseAuth =  FirebaseAuth.getInstance()
 
     private val binding get()= _binding!!
     private val questionArrayList = ArrayList<Answer>()
@@ -57,7 +56,7 @@ class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
         binding.listOfQuiz.adapter = adapter
         binding.loadingResultProgressBar.visibility = View.VISIBLE
         questionArrayList.clear()
-        firestore.collection("users").document(firebaseAuth.currentUser?.uid!!).collection("submodules").document(param2!!).collection("quizzes").get()
+        firestore.collection("users").document(param1!!).collection("submodules").document(param2!!).collection("quizzes").get()
             .addOnSuccessListener {
                 for (document in it){
                     val question = Answer(
