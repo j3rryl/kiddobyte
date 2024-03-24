@@ -51,13 +51,27 @@
         </LinearLayout>
 
 
-        <Button
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Remove User"
-            android:layout_gravity="end"
-            android:layout_marginHorizontal="10dp"
-            android:id="@+id/remove_user_button"
-            />
+            android:orientation="horizontal">
+            <Button
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View Report"
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/view_report_button"
+                />
+            <Button
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove User"
+                android:layout_marginHorizontal="10dp"
+                android:id="@+id/remove_user_button"
+                />
+        </LinearLayout>
+
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

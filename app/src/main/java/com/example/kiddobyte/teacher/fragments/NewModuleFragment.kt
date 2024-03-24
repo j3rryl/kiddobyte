@@ -108,7 +108,7 @@ class NewModuleFragment : Fragment() {
                                         url.toString(),
                                         createdAt = Calendar.getInstance().time,
                                         updatedAt = Calendar.getInstance().time,
-                                        moduleId = null
+                                        moduleId = param1
                                     )
                                     if(param1!=null) {
                                         firestore.collection("modules").document(param1!!).collection("submodules")

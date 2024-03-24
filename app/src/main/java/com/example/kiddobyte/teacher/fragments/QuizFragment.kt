@@ -128,14 +128,17 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
         )
         firestore.collection("modules").document(param1!!).collection("submodules").document(param2!!).get()
             .addOnSuccessListener { documentSnapshot ->
-                var submodule: Module?=null
+                var submodule: SubModule?=null
                 if (documentSnapshot.exists()) {
-                    submodule = Module(
+                    submodule = SubModule(
                         documentSnapshot.getString("title")?:"",
                         documentSnapshot.getString("author")?:"",
-                        documentSnapshot.getString("authorUid")?:"",
+                        param2!!,
                         documentSnapshot.getString("difficulty")?:"",
-                        documentSnapshot.getString("imageUrl")?:""
+                        param1!!,
+                        documentSnapshot.getString("content")?:"",
+                        null,
+                        documentSnapshot.getString("imageUrl")?:"",
                     )
                     Log.d("Firestore module success", submodule.title)
 

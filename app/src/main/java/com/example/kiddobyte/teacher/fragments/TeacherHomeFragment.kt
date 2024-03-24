@@ -28,7 +28,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [TeacherHomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAdapter.OnRemoveClickListener {
+class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAdapter.OnRemoveClickListener, UserAdapter.OnReportClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -76,7 +76,7 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
         }
         binding.listOfUsers.setHasFixedSize(true)
         binding.listOfUsers.layoutManager = LinearLayoutManager(requireActivity())
-        adapter = UserAdapter(requireActivity(), userArrayList, this, this, sharedPrefs)
+        adapter = UserAdapter(requireActivity(), userArrayList, this, this, this, sharedPrefs)
         binding.listOfUsers.adapter = adapter
         loadUsers()
         return binding.root
@@ -193,5 +193,13 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
                     println("Error deleting user from Firestore: ${e.message}")
                 }
         }
+    }
+
+    override fun onReportClick(item: User) {
+        val newFragment = ProgressFragment.newInstance(item.id!!, item.name)
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.frame_layout, newFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }
