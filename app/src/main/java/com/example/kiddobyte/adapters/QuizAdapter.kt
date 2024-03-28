@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -26,7 +28,11 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
         val resultView: LinearLayout = itemView.findViewById(R.id.result_view)
         val quizView: LinearLayout = itemView.findViewById(R.id.quiz_view)
         val isCorrect: ImageView = itemView.findViewById(R.id.is_correct)
-
+        val radioGroup: RadioGroup = itemView.findViewById(R.id.radio_group)
+        val option1: RadioButton = itemView.findViewById(R.id.option1)
+        val option2: RadioButton = itemView.findViewById(R.id.option2)
+        val option3: RadioButton = itemView.findViewById(R.id.option3)
+        val option4: RadioButton = itemView.findViewById(R.id.option4)
     }
 
 
@@ -41,9 +47,28 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val item = dataList[position]
         holder.question.text = dataList[position].title
+        holder.option1.text = dataList[position].option1
+        holder.option2.text = dataList[position].option2
+        holder.option3.text = dataList[position].option3
+        holder.option4.text = dataList[position].option4
+// Set checked state based on selected option
+        when (item.selected) {
+            item.option1 -> holder.option1.isChecked = true
+            item.option2 -> holder.option2.isChecked = true
+            item.option3 -> holder.option3.isChecked = true
+            item.option4 -> holder.option4.isChecked = true
+        }
+
+        holder.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+            val selectedRadioButton = group.findViewById<RadioButton>(checkedId)
+            val selectedOption = selectedRadioButton.text.toString()
+            item.selected = selectedOption
+        }
+
         if(isQuiz){
             holder.resultView.visibility = View.GONE
             holder.quizView.visibility = View.VISIBLE
+            holder.radioGroup.visibility = View.VISIBLE
             if (dataList[position].selected?.isNotEmpty() == true){
                 holder.inputAnswer.setText(dataList[position].selected)
                 holder.inputAnswer.isEnabled = false
@@ -51,6 +76,7 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
             }
         } else {
             holder.resultView.visibility = View.VISIBLE
+            holder.radioGroup.visibility = View.GONE
             val setAnswer = "Correct answer: ${dataList[position].answer}"
             val selectedAnswer = "Selected answer: ${dataList[position].selected}"
             holder.correctAnswer.text = setAnswer
@@ -66,7 +92,6 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
 
 
         holder.answerButton.setOnClickListener{
-            dataList[position].selected = holder.inputAnswer.text.toString()
             answerClickListener.onAnswerClick(item)
         }
     }

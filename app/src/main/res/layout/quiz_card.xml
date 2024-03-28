@@ -29,6 +29,7 @@
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_new_answer_layout"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
@@ -51,7 +52,31 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter answer"
                 android:inputType="textCapSentences" />
+
             </com.google.android.material.textfield.TextInputLayout>
+            <RadioGroup
+                android:id="@+id/radio_group"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="12dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            <RadioButton android:id="@+id/option1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 1"/>
+            <RadioButton android:id="@+id/option2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 2"/>
+            <RadioButton android:id="@+id/option3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 3"/>
+            <RadioButton android:id="@+id/option4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Option 4"/>
+            </RadioGroup>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

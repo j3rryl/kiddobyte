@@ -64,6 +64,110 @@
                 android:hint="Enter Answer"
                 android:inputType="textCapSentences" />
         </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Options"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Answer">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_option1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option 1"
+                android:text="Option 1"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Answer">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_option2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option 2"
+                android:text="Option 2"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Answer">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_option3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option 3"
+                android:text="Option 3"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:boxBackgroundColor="@color/white"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="20dp"
+            app:boxCornerRadiusBottomStart="20dp"
+            app:boxCornerRadiusTopEnd="20dp"
+            app:boxCornerRadiusTopStart="20dp"
+            app:boxStrokeColor="@color/purple"
+            app:endIconMode="clear_text"
+            app:endIconTint="@color/purple"
+            app:errorEnabled="true"
+            app:hintTextColor="@color/purple"
+            app:placeholderText="Answer">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_option4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Option 4"
+                android:text="Option 4"
+                android:inputType="textCapSentences" />
+        </com.google.android.material.textfield.TextInputLayout>
         <Button
             android:id="@+id/save_question_button"
             android:layout_width="wrap_content"

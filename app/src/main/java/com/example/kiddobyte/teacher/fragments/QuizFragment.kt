@@ -1,6 +1,8 @@
 package com.example.kiddobyte.teacher.fragments
 
 import android.os.Bundle
+import android.os.CountDownTimer
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.kiddobyte.R
 import com.example.kiddobyte.adapters.QuizAdapter
 import com.example.kiddobyte.databinding.FragmentQuizBinding
 import com.example.kiddobyte.models.Answer
@@ -33,6 +37,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     private var param2: String? = null
     private var _binding: FragmentQuizBinding?= null
     private val firebaseAuth =  FirebaseAuth.getInstance()
+    private lateinit var countDownTimer: CountDownTimer
 
     private val binding get()= _binding!!
     private val questionArrayList = ArrayList<Answer>()
@@ -68,8 +73,13 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                         document.getString("selected")?:"",
                         document.getBoolean("correct")?:false,
                         document.getString("feedback")?:"",
-                        document.id
-                    )
+                        document.id,
+                        document.getString("option1")?:"",
+                        document.getString("option2")?:"",
+                        document.getString("option3")?:"",
+                        document.getString("option4")?:"",
+
+                        )
                     Log.d("Firestore quiz", question.selected!!)
                     questionArrayList.add(question)
                 }
@@ -93,6 +103,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as AppCompatActivity
         activity.supportActionBar?.title = "Quiz"
+        startTimer()
     }
 
     companion object {
@@ -114,6 +125,31 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                 }
             }
     }
+    private fun startTimer() {
+        countDownTimer = object : CountDownTimer(30000, 1000) { // 5 minutes timer
+            override fun onTick(millisUntilFinished: Long) {
+                val minutes = (millisUntilFinished / 1000) / 60
+                val seconds = (millisUntilFinished / 1000) % 60
+                val timerText = String.format("%02d:%02d", minutes, seconds)
+                val activity = requireActivity() as AppCompatActivity
+                activity.supportActionBar?.title = "Quiz - Time left: $timerText"
+
+            }
+
+            override fun onFinish() {
+                Toast.makeText(requireContext(), "Time's up!", Toast.LENGTH_SHORT).show()
+                Handler().postDelayed({
+                    val newFragment = ResultFragment.newInstance(firebaseAuth.currentUser?.uid!!, param2!!)
+                    val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.frame_layout, newFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
+                }, 500)
+            }
+        }.start()
+    }
+
+
 
     override fun onAnswerClick(item: Answer) {
         val currentUser = firebaseAuth.currentUser?:return
@@ -158,6 +194,14 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                                     val removedIndex = questionArrayList.indexOf(item)
                                     questionArrayList.removeAt(removedIndex)
                                     adapter.notifyItemRemoved(removedIndex)
+                                    if(questionArrayList.isEmpty()){
+                                        countDownTimer.cancel()
+                                            val newFragment = ResultFragment.newInstance(firebaseAuth.currentUser?.uid!!, param2!!)
+                                            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+                                            transaction.replace(R.id.frame_layout, newFragment)
+                                            transaction.addToBackStack(null)
+                                            transaction.commit()
+                                    }
                                 }
                                 .addOnFailureListener { exception ->
                                     Log.w("Firestore error", "Error adding question", exception)
@@ -177,36 +221,5 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
             .addOnFailureListener { exception ->
                 Log.e("Firestore", "Error fetching submodule: ${exception.message}", exception)
             }
-
-
-//        firestore.collection("users").document(currentUser.uid).collection("submodules")
-//            .document(param2!!)
-//            .collection("quizzes")
-//            .document(item.uid!!)
-//            .set(newDoc)
-//            .addOnSuccessListener {
-//                Log.d(
-//                    "Firestore success",
-//                    "Answer saved successfully"
-//                )
-//                Toast.makeText(
-//                    context,
-//                    "Quiz answered successfully",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                val removedIndex = questionArrayList.indexOf(item)
-//                questionArrayList.removeAt(removedIndex)
-//                adapter.notifyItemRemoved(removedIndex)
-//
-//            }
-//            .addOnFailureListener {
-//                Log.w("Firestore error", "Error adding question", it)
-//                Toast.makeText(
-//                    context,
-//                    "Error answering question!",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//
-//            }
     }
 }

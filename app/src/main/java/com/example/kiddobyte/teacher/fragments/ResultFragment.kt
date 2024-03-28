@@ -89,6 +89,7 @@ class ResultFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                 binding.correctAnswers.text = correctAnswers
                 adapter.notifyDataSetChanged()
                 binding.loadingResultProgressBar.visibility = View.GONE
+                binding.congrats.visibility = View.VISIBLE
 
             }
             .addOnFailureListener { exception ->

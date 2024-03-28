@@ -115,12 +115,6 @@
                     />
             </LinearLayout>
 
-            <ImageView
-                android:layout_width="200dp"
-                android:layout_gravity="center"
-                android:id="@+id/uploadImageView"
-                android:src="@drawable/baseline_add_photo"
-                android:layout_height="200dp"/>
 
             <Button
                 android:id="@+id/update_module_button"

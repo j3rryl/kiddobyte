@@ -2,6 +2,7 @@ package com.example.kiddobyte.teacher
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.kiddobyte.R
 import com.example.kiddobyte.authentication.LoginActivity
 import com.example.kiddobyte.databinding.ActivityTeacherBinding
+import com.example.kiddobyte.teacher.fragments.ChildFragment
 import com.example.kiddobyte.teacher.fragments.ModulesFragment
 import com.example.kiddobyte.teacher.fragments.TeacherHomeFragment
 import com.example.kiddobyte.teacher.fragments.SupportFragment
@@ -19,11 +21,17 @@ import com.google.firebase.auth.FirebaseAuth
 
 class TeacherActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTeacherBinding
+    private lateinit var sharedPrefs: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTeacherBinding.inflate(layoutInflater)
+        sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val userType = sharedPrefs.getString("userType", null)
+
         setContentView(binding.root)
-        loadFragment(TeacherHomeFragment())
+        val fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherHomeFragment()
+        loadFragment(fragment)
         binding.bottomNavigationBar.setItemSelected(R.id.nav_home, true)
         binding.bottomNavigationBar.showBadge(R.id.nav_modules, 15)
         setSupportActionBar(findViewById(R.id.teacher_toolbar))
@@ -63,10 +71,13 @@ class TeacherActivity : AppCompatActivity() {
     }
     private fun setUpTabBar(){
         binding.bottomNavigationBar.setOnItemSelectedListener {
-            var fragment: Fragment = TeacherHomeFragment()
+            sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+            val userType = sharedPrefs.getString("userType", null)
+
+            var fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherHomeFragment()
             when(it){
                 R.id.nav_home-> {
-                    fragment= TeacherHomeFragment()
+                    fragment= if (userType == "Student") ChildFragment() else TeacherHomeFragment()
                 }
                 R.id.nav_modules-> {
                     fragment= ModulesFragment()

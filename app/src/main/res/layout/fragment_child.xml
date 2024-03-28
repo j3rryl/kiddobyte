@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@+id/bottom_navigation_bar"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".teacher.fragments.ChildFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/bee"
+        android:layout_width="298dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:lottie_rawRes="@raw/bee" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/module_content"
+        android:layout_below="@+id/bee"
+        android:layout_margin="15dp"
+        android:text="Welcome to Tures - where coding is child's play! Dive into the exciting world of programming with fun and interactive activities designed just for kids. Learn to create your own games, animations, and apps while exploring the magic of coding. With colorful visuals, step-by-step guidance, and hands-on challenges, discover the joy of coding in a way that's easy, engaging, and totally fun!" />
+
+</RelativeLayout>

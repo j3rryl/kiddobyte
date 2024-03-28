@@ -95,15 +95,7 @@ class UpdateSubModuleFragment : Fragment() {
                     // Handle the failure to fetch submodule
                 }
 
-        val pickImage = registerForActivityResult(ActivityResultContracts.GetContent()){
-            binding.uploadImageView.setImageURI(it)
-            if(it!=null){
-                uri = it
-            }
-        }
-        binding.uploadImageView.setOnClickListener{
-            pickImage.launch("image/*")
-        }
+
         binding.difficulty.setOnItemClickListener { parent, view, position, id ->
             selected = parent.getItemAtPosition(position).toString()
         }
@@ -114,58 +106,37 @@ class UpdateSubModuleFragment : Fragment() {
             val content = binding.inputUpdateContent.text.toString()
             val difficulty = selected
             auth = FirebaseAuth.getInstance()
-            val currentUser = auth.currentUser
 
-
-            uri?.let { uri1 ->
-                val timestamp = System.currentTimeMillis()
-                val randomString = UUID.randomUUID().toString().substring(0,8)
-                storageRef.child("$timestamp-$randomString").putFile(uri1)
+            val updateData = hashMapOf<String, Any>(
+                "title" to title,
+                "content" to content,
+                "difficulty" to difficulty,
+                "updatedAt" to Calendar.getInstance().time
+            )
+            if(param1!=null && param2!=null) {
+                firestore.collection("modules").document(param1!!).collection("submodules")
+                    .document(param2!!)
+                    .update(updateData)
                     .addOnSuccessListener {
-                        it.metadata!!.reference!!.downloadUrl
-                            .addOnSuccessListener {url->
-                                currentUser?.let {
-                                    val authorUid = currentUser.uid
-                                    val authorName = currentUser.displayName?: "Unknown"
-
-                                    val updateData = hashMapOf<String, Any>(
-                                        "title" to title,
-                                        "authorName" to authorName,
-                                        "content" to content,
-                                        "authorUid" to authorUid,
-                                        "difficulty" to difficulty,
-                                        "imageUrl" to url.toString(),
-                                        "updatedAt" to Calendar.getInstance().time
-                                    )
-                                    if(param1!=null && param2!=null) {
-                                        firestore.collection("modules").document(param1!!).collection("submodules")
-                                            .document(param2!!)
-                                            .update(updateData)
-                                            .addOnSuccessListener {
-                                                Log.d(
-                                                    "Firestore success",
-                                                    "Submodule data saved successfully"
-                                                )
-                                                Toast.makeText(
-                                                    context,
-                                                    "Submodule updated successfully",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                requireActivity().supportFragmentManager.popBackStack()
-                                            }
-                                            .addOnFailureListener {
-                                                Log.w("Firestore error", "Error updating submodule", it)
-                                                Toast.makeText(
-                                                    context,
-                                                    "Error updating submodule!",
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                    }
-                                }
-                            }
+                        Log.d(
+                            "Firestore success",
+                            "Submodule data saved successfully"
+                        )
+                        Toast.makeText(
+                            context,
+                            "Submodule updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        requireActivity().supportFragmentManager.popBackStack()
                     }
-                    .addOnCompleteListener{
+                    .addOnFailureListener {
+                        Log.w("Firestore error", "Error updating submodule", it)
+                        Toast.makeText(
+                            context,
+                            "Error updating submodule!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }.addOnCompleteListener{
                         binding.moduleProgressBar.visibility = View.GONE
                         binding.updateModuleButton.isEnabled = true
                     }

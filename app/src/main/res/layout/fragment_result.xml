@@ -18,6 +18,21 @@
         app:layout_constraintRight_toRightOf="parent"
         android:visibility="gone"
         android:indeterminateTint="@color/purple"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/congrats"
+        android:visibility="gone"
+        android:layout_width="298dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="false"
+        app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_rawRes="@raw/congrats" />
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,19 +41,21 @@
         app:cardBackgroundColor="@color/white"
         android:layout_margin="5dp"
         android:paddingVertical="10dp"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/congrats"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:id="@+id/correct_answers"
-                android:layout_height="wrap_content"
-                android:text="Correct"
-                android:layout_margin="10dp"
-                android:textSize="15sp"
-                android:textColor="@color/black"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+
+
+        <TextView
+            android:id="@+id/correct_answers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Correct"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
     </com.google.android.material.card.MaterialCardView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_of_quiz"
