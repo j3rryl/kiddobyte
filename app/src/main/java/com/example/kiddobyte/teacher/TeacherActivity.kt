@@ -14,7 +14,7 @@ import com.example.kiddobyte.authentication.LoginActivity
 import com.example.kiddobyte.databinding.ActivityTeacherBinding
 import com.example.kiddobyte.teacher.fragments.ChildFragment
 import com.example.kiddobyte.teacher.fragments.ModulesFragment
-import com.example.kiddobyte.teacher.fragments.TeacherHomeFragment
+import com.example.kiddobyte.teacher.fragments.TeacherParentHomeFragment
 import com.example.kiddobyte.teacher.fragments.SupportFragment
 import com.example.kiddobyte.teacher.fragments.UpdateProfileFragment
 import com.google.firebase.auth.FirebaseAuth
@@ -30,7 +30,7 @@ class TeacherActivity : AppCompatActivity() {
         val userType = sharedPrefs.getString("userType", null)
 
         setContentView(binding.root)
-        val fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherHomeFragment()
+        val fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherParentHomeFragment()
         loadFragment(fragment)
         binding.bottomNavigationBar.setItemSelected(R.id.nav_home, true)
         binding.bottomNavigationBar.showBadge(R.id.nav_modules, 15)
@@ -74,10 +74,10 @@ class TeacherActivity : AppCompatActivity() {
             sharedPrefs = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
             val userType = sharedPrefs.getString("userType", null)
 
-            var fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherHomeFragment()
+            var fragment: Fragment = if (userType == "Student") ChildFragment() else TeacherParentHomeFragment()
             when(it){
                 R.id.nav_home-> {
-                    fragment= if (userType == "Student") ChildFragment() else TeacherHomeFragment()
+                    fragment= if (userType == "Student") ChildFragment() else TeacherParentHomeFragment()
                 }
                 R.id.nav_modules-> {
                     fragment= ModulesFragment()
