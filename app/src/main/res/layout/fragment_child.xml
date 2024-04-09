@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/module_content"
         android:layout_below="@+id/child_name"
-        android:layout_margin="1dp"
+        android:layout_marginHorizontal="15dp"
         android:text="Welcome to Tures - where coding is child's play! Dive into the exciting world of programming with fun and interactive activities designed just for kids. Learn to create your own games, animations, and apps while exploring the magic of coding. With colorful visuals, step-by-step guidance, and hands-on challenges, discover the joy of coding in a way that's easy, engaging, and totally fun!" />
 
 </RelativeLayout>
