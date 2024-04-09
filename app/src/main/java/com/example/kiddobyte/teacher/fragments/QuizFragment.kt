@@ -126,7 +126,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
             }
     }
     private fun startTimer() {
-        countDownTimer = object : CountDownTimer(30000, 1000) { // 5 minutes timer
+        countDownTimer = object : CountDownTimer(120000, 1000) { // 5 minutes timer
             override fun onTick(millisUntilFinished: Long) {
                 val minutes = (millisUntilFinished / 1000) / 60
                 val seconds = (millisUntilFinished / 1000) % 60

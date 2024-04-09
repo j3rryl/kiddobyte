@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
 import com.example.kiddobyte.databinding.FragmentChildBinding
 import com.example.kiddobyte.databinding.FragmentContentBinding
+import com.google.firebase.auth.FirebaseAuth
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,9 +27,11 @@ class ChildFragment : Fragment() {
     private var param2: String? = null
     private var _binding: FragmentChildBinding?=null
     private val binding get()=_binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth = FirebaseAuth.getInstance()
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
@@ -41,6 +44,7 @@ class ChildFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentChildBinding.inflate(inflater, container, false)
+        binding.childName.text = "Welcome ${auth.currentUser?.displayName}"
         return binding.root
     }
     override fun onDestroyView() {

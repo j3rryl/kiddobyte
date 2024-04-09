@@ -1,5 +1,7 @@
 package com.example.kiddobyte.teacher.fragments
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -10,6 +12,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.kiddobyte.R
+import com.example.kiddobyte.authentication.LoginActivity
 import com.example.kiddobyte.databinding.FragmentNewEntityBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
@@ -78,65 +81,7 @@ class NewEntityFragment : Fragment() {
 
 
         binding.saveUserButton.setOnClickListener {
-            val name = binding.inputNewName.text.toString()
-            val email = binding.inputNewEmail.text.toString()
-            val password = binding.inputNewPassword.text.toString()
-            val parentName = binding.parentView.text.toString()
-            val parentUid = parentMap[parentName]
-
-            binding.progressBar.visibility = View.VISIBLE
-            binding.saveUserButton.isEnabled = false
-
-            auth = FirebaseAuth.getInstance()
-            val userType = selected
-
-            try {
-                auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
-                    binding.progressBar.visibility = View.GONE
-                    binding.saveUserButton.isEnabled = true
-                    if(it.isSuccessful){
-                        val user = auth.currentUser
-                        user?.sendEmailVerification()
-                        val profileUpdate = UserProfileChangeRequest.Builder()
-                            .setDisplayName(name)
-                            .build()
-                        user?.updateProfile(profileUpdate)?.addOnCompleteListener { task ->
-                            if(task.isSuccessful){
-                                Log.d("Firestore update success", "User profile updated successfully")
-                            }
-                        }
-                        user?.let{
-                            val uid = user.uid
-                            val userData = hashMapOf(
-                                "name" to name,
-                                "email" to email,
-                                "userType" to userType,
-                            )
-                            if(selected == "Student" && parentUid!=null){
-                                userData["parentUid"] = parentUid
-                            }
-                            firestore.collection("users").document(uid).set(userData)
-                                .addOnSuccessListener {
-                                    Log.d("Firestore success", "USER data saved successfully")
-                                    Toast.makeText(context, "User added successfully", Toast.LENGTH_SHORT).show()
-                                    requireActivity().supportFragmentManager.popBackStack()
-
-                                }
-                                .addOnFailureListener{
-                                    Log.w("Firestore error", "Error adding user", it)
-                                    Toast.makeText(context, "Error Adding user!", Toast.LENGTH_SHORT).show()
-                                }
-                        }
-                    } else {
-                        Log.w("Fireauth error", "${(it.exception as FirebaseAuthException).errorCode} ${(it.exception as FirebaseAuthException).message}")
-                        Toast.makeText(context, "${(it.exception as FirebaseAuthException).message}", Toast.LENGTH_SHORT).show()
-                    }
-                }
-
-            } catch (e: FirebaseAuthException){
-                Log.e("Error adding user", "Error creating user: ${e.errorCode} ${e.message}")
-                Toast.makeText(context, "Error Adding User", Toast.LENGTH_SHORT).show()
-            }
+            addUser(selected)
         }
         return binding.root
     }
@@ -164,6 +109,78 @@ class NewEntityFragment : Fragment() {
                 Toast.makeText(context, "Failed to fetch parents", Toast.LENGTH_SHORT).show()
                 Log.w("Firestore error", "${it.message}", it)
             }
+    }
+
+    private fun addUser(selected:String){
+        val name = binding.inputNewName.text.toString()
+        val email = binding.inputNewEmail.text.toString()
+        val password = binding.inputNewPassword.text.toString()
+        val parentName = binding.parentView.text.toString()
+        val parentUid = parentMap[parentName]
+
+        if(name.isEmpty()||email.isEmpty()||password.isEmpty()){
+            Toast.makeText(context, "Please fill in all fields!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        binding.progressBar.visibility = View.VISIBLE
+        binding.saveUserButton.isEnabled = false
+
+        auth = FirebaseAuth.getInstance()
+        val userType = selected
+
+        try {
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
+                binding.progressBar.visibility = View.GONE
+                binding.saveUserButton.isEnabled = true
+                if(it.isSuccessful){
+                    val user = auth.currentUser
+                    user?.sendEmailVerification()
+                    val profileUpdate = UserProfileChangeRequest.Builder()
+                        .setDisplayName(name)
+                        .build()
+                    user?.updateProfile(profileUpdate)?.addOnCompleteListener { task ->
+                        if(task.isSuccessful){
+                            Log.d("Firestore update success", "User profile updated successfully")
+                        }
+                    }
+                    user?.let{
+                        val uid = user.uid
+                        val userData = hashMapOf(
+                            "name" to name,
+                            "email" to email,
+                            "userType" to userType,
+                        )
+                        if(selected == "Student" && parentUid!=null){
+                            userData["parentUid"] = parentUid
+                        }
+                        firestore.collection("users").document(uid).set(userData)
+                            .addOnSuccessListener {
+                                Log.d("Firestore success", "USER data saved successfully")
+                                Toast.makeText(context, "User added successfully", Toast.LENGTH_SHORT).show()
+                                FirebaseAuth.getInstance().signOut()
+                                val sharedPrefs = requireContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+                                val userType = sharedPrefs.getString("userType", null)
+                                Log.d("sharedPref", userType?:"")
+                                val editor = sharedPrefs.edit()
+                                editor.clear().apply()
+                                val intent = Intent(requireActivity(), LoginActivity::class.java)
+                                startActivity(intent)
+                            }
+                            .addOnFailureListener{
+                                Log.w("Firestore error", "Error adding user", it)
+                                Toast.makeText(context, "Error Adding user!", Toast.LENGTH_SHORT).show()
+                            }
+                    }
+                } else {
+                    Log.w("Fireauth error", "${(it.exception as FirebaseAuthException).errorCode} ${(it.exception as FirebaseAuthException).message}")
+                    Toast.makeText(context, "${(it.exception as FirebaseAuthException).message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        } catch (e: FirebaseAuthException){
+            Log.e("Error adding user", "Error creating user: ${e.errorCode} ${e.message}")
+            Toast.makeText(context, "Error Adding User", Toast.LENGTH_SHORT).show()
+        }
     }
     companion object {
         /**

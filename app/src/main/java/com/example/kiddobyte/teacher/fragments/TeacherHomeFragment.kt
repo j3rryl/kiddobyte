@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.kiddobyte.R
 import com.example.kiddobyte.adapters.UserAdapter
@@ -17,6 +18,8 @@ import com.example.kiddobyte.databinding.FragmentTeacherHomeBinding
 import com.example.kiddobyte.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -39,6 +42,8 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
     private var firestore: FirebaseFirestore? = null
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var auth: FirebaseAuth
+    private var fetchUsersListenerRegistration: ListenerRegistration? = null
+
 
 
 
@@ -90,62 +95,70 @@ class TeacherHomeFragment : Fragment(), UserAdapter.OnItemClickListener, UserAda
         binding.loadingUsersProgressBar.visibility = View.VISIBLE
 
         val userType = sharedPrefs.getString("userType", null)
-        if(userType=="Parent"){
-            firestore?.collection("users")?.whereEqualTo("parentUid", auth.currentUser?.uid)?.get()
-                ?.addOnSuccessListener {
-                    userArrayList.clear()
-                    for (document in it){
-                        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-                        if(document.id!= currentUserId) {
-                            val user = User(
-                                document.id,
-                                document.getString("name") ?: "",
-                                document.getString("email") ?: "",
-                                document.getString("userType") ?: "",
-                                document.getString("imageUrl") ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
-                            )
-                            userArrayList.add(user)
+        lifecycleScope.launch {
+            if(userType=="Parent"){
+                firestore?.collection("users")?.whereEqualTo("parentUid", auth.currentUser?.uid)?.get()
+                    ?.addOnSuccessListener {
+                        userArrayList.clear()
+                        for (document in it){
+                            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                            if(document.id!= currentUserId) {
+                                val user = User(
+                                    document.id,
+                                    document.getString("name") ?: "",
+                                    document.getString("email") ?: "",
+                                    document.getString("userType") ?: "",
+                                    document.getString("imageUrl") ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
+                                )
+                                userArrayList.add(user)
+                            }
                         }
+                        adapter.notifyDataSetChanged()
+                        binding.loadingUsersProgressBar.visibility = View.GONE
                     }
-                    adapter.notifyDataSetChanged()
-                    binding.loadingUsersProgressBar.visibility = View.GONE
-                }
-                ?.addOnFailureListener{
-                    binding.loadingUsersProgressBar.visibility = View.GONE
-                    Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
-                    Log.w("Firestore error", "${it.message}", it)
-                }
-        } else {
-            firestore?.collection("users")?.get()
-                ?.addOnSuccessListener {
-                    userArrayList.clear()
-                    for (document in it) {
-                        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
-                        if (document.id != currentUserId) {
-                            val user = User(
-                                document.id,
-                                document.getString("name") ?: "",
-                                document.getString("email") ?: "",
-                                document.getString("userType") ?: "",
-                                document.getString("imageUrl")
-                                    ?: "https://w7.pngwing.com/pngs/396/728/png-transparent-toddler-profile-child-classroom-discipline-school-kindergarten-kids-cartoon-love-hand-people.png"
-                            )
-                            userArrayList.add(user)
+                    ?.addOnFailureListener{
+                        binding.loadingUsersProgressBar.visibility = View.GONE
+                        Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
+                        Log.w("Firestore error", "${it.message}", it)
+                    }
+            } else {
+                firestore?.collection("users")?.get()
+                    ?.addOnSuccessListener {
+                        userArrayList.clear()
+                        for (document in it) {
+                            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                            if (document.id != currentUserId) {
+                                val user = User(
+                                    document.id,
+                                    document.getString("name") ?: "",
+                                    document.getString("email") ?: "",
+                                    document.getString("userType") ?: "",
+                                    document.getString("imageUrl")
+                                        ?: "https://bilingualkidspot.com/wp-content/uploads/2016/12/English-Cartoons-for-Kids-that-are-Educational-AND-Fun-2.png"
+                                )
+                                userArrayList.add(user)
+                            }
                         }
+                        adapter.notifyDataSetChanged()
+                        binding.loadingUsersProgressBar.visibility = View.GONE
                     }
-                    adapter.notifyDataSetChanged()
-                    binding.loadingUsersProgressBar.visibility = View.GONE
-                }
-                ?.addOnFailureListener {
-                    binding.loadingUsersProgressBar.visibility = View.GONE
-                    Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
-                    Log.w("Firestore error", "${it.message}", it)
-                }
+                    ?.addOnFailureListener {
+                        binding.loadingUsersProgressBar.visibility = View.GONE
+                        Toast.makeText(context, "Failed to fetch modules", Toast.LENGTH_SHORT).show()
+                        Log.w("Firestore error", "${it.message}", it)
+                    }
+            }
         }
+
     }
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fetchUsersListenerRegistration?.remove()
     }
     companion object {
         /**

@@ -92,6 +92,7 @@ class QuizAdapter (private val context: Activity, private val dataList: ArrayLis
 
 
         holder.answerButton.setOnClickListener{
+            holder.answerButton.isEnabled = false
             answerClickListener.onAnswerClick(item)
         }
     }
