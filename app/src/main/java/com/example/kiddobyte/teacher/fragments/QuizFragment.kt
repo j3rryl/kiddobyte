@@ -83,6 +83,9 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
                     Log.d("Firestore quiz", question.selected!!)
                     questionArrayList.add(question)
                 }
+                if(questionArrayList.isEmpty()){
+                    Toast.makeText(context, "No questions uploaded yet", Toast.LENGTH_LONG).show()
+                }
                 adapter.notifyDataSetChanged()
                 binding.loadingQuizProgressBar.visibility = View.GONE
 
@@ -97,6 +100,7 @@ class QuizFragment : Fragment(), QuizAdapter.OnAnswerClickListener {
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        countDownTimer.cancel()
         _binding = null
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

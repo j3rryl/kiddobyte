@@ -96,6 +96,9 @@ class SubModulesFragment : Fragment(), ModuleAdapter.OnItemClickListener, Module
                         )
                         moduleArrayList.add(module)
                     }
+                    if(moduleArrayList.isEmpty()){
+                        Toast.makeText(context, "No modules uploaded yet", Toast.LENGTH_LONG).show()
+                    }
                     adapter.notifyDataSetChanged()
                     binding.loadingProgressBar.visibility = View.GONE
                 }
